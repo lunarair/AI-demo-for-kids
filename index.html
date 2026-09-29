@@ -231,6 +231,13 @@ select{font:inherit;padding:8px 12px;border-radius:999px;border:3px solid var(--
 #hb-svg .node .em{font-size:28px}
 #hb-svg .node .lbl{font-size:17px;font-weight:600;fill:var(--ink);font-family:inherit}
 #hb-say{font-size:19px;min-height:60px;margin:10px 0}
+.topics{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.topic{background:#fff;color:var(--ink);text-align:left;border-radius:18px;padding:12px 14px;box-shadow:0 3px 0 var(--line);font-weight:500;border:3px solid transparent}
+.topic .te{font-size:34px;line-height:1.1;display:block}
+.topic small{display:block;color:var(--muted);font-size:15px}
+.topic.on{border-color:var(--purple);background:var(--purple-soft)}
+.topic.on::after{content:'✅ chosen';float:right;font-size:14px;color:var(--purple);font-weight:700}
+#hb-svg .edge.weak{stroke-dasharray:4 6}
 .answer-bad{background:var(--red-soft);border:3px solid var(--red);border-radius:16px;padding:10px 14px;animation:pop .4s}
 .snowrow{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
 #snowball{font-size:30px;line-height:1;transition:font-size .6s;display:inline-block;animation:roll 2s linear infinite}
@@ -601,9 +608,15 @@ select{font:inherit;padding:8px 12px;border-radius:999px;border:3px solid var(--
     <p>When Chatty does not know something, it may still pick words that <b>sound</b> right, and say them very confidently. When an AI makes up something false, it is called a <b>hallucination</b>.</p>
   </div>
 
+  <div class="card green">
+    <h3>🎯 Pick a topic to investigate</h3>
+    <p>Choose a topic. Then watch how Chatty's hallucination is born (Part A) and how it snowballs (Part B). Try all three!</p>
+    <div class="topics" id="topics" role="tablist" aria-label="Hallucination topics"></div>
+  </div>
+
   <div class="card blue">
     <h3>🔍 Part A: How a hallucination is born: the WRONG link</h3>
-    <p>Someone asks Chatty: <b>"Who was the first person to walk on Mars?"</b> 🔴</p>
+    <p>Someone asks Chatty: <b id="hb-q"></b></p>
     <p>Let's look inside Chatty's word brain (remember Stop 1?) and watch what happens, step by step.</p>
     <svg id="hb-svg" viewBox="0 0 640 410" role="img" aria-label="Chatty's word brain following the wrong link"></svg>
     <div id="hb-say" aria-live="polite"></div>
@@ -631,9 +644,9 @@ select{font:inherit;padding:8px 12px;border-radius:999px;border:3px solid var(--
 
   <details class="grown"><summary>👩‍🏫 For grown-ups: what is simplified here?</summary>
     <ul>
-      <li>Real models do not have labelled nodes. But the idea is real: "Mars" and "Moon" have similar internal number patterns, and the very strong "first person to walk on → Moon → Neil Armstrong" pattern can win over the weak, correct answer "nobody".</li>
+      <li>Real models do not have labelled nodes. But the idea is real: similar things ("Mars" and "Moon", "wild mushroom" and "shop mushroom", "sea water" and "bottled water") have similar internal number patterns. A very strong, common pattern can win over a weak but correct one.</li>
       <li>Snowballing is also seen in research: once a model commits to a wrong claim, it often writes more wrong claims to support it. See "How Language Model Hallucinations Can Snowball" (Zhang et al., 2023).</li>
-      <li>The Mars story is a made-up example for teaching. Many modern chatbots will answer this exact question correctly.</li>
+      <li>The three stories are made-up examples for teaching. Many modern chatbots will answer these exact questions correctly, and some are trained to add safety warnings. The lesson (check facts, especially about health and safety) still applies.</li>
     </ul>
   </details>
 
@@ -1417,93 +1430,165 @@ QUIZ.forEach(item => {
   bFake.onclick = () => answer(false);
   $('#quiz').appendChild(d);
 });
-// ---- Part A: the wrong link ----
-const HB = {
-  nodes: {
-    walk: { e: '🚶', l: 'walked on', x: 110, y: 80 }, mars: { e: '🔴', l: 'Mars', x: 110, y: 290 },
-    red: { e: '🟥', l: 'red', x: 230, y: 350 }, rover: { e: '🤖', l: 'robot rover', x: 370, y: 300 },
-    moon: { e: '🌙', l: 'Moon', x: 360, y: 130 }, neil: { e: '👨‍🚀', l: 'Neil Armstrong', x: 555, y: 80 },
-    y1969: { e: '📅', l: '1969', x: 560, y: 270 },
+// ---- Hallucination topics: each has a word brain (Part A) and a snowball (Part B) ----
+// Layout slots are shared: q1/q2 = question words, a/b = what the real topic links to,
+// sim = the look-alike (WRONG) node, h1/h2 = strong links of the look-alike, weak = a thin, correct warning link.
+const HB_POS = { q1: [110, 80], q2: [110, 290], a: [230, 350], b: [370, 300], sim: [360, 130], h1: [555, 80], h2: [560, 270], weak: [45, 185] };
+const HT = {
+  history: {
+    tab: '📜 History', q: '"Who was the first person to walk on Mars?" 🔴',
+    nodes: { q1: ['🚶', 'walked on'], q2: ['🔴', 'Mars'], a: ['🟥', 'red'], b: ['🤖', 'robot rover'], sim: ['🌙', 'Moon'], h1: ['👨‍🚀', 'Neil Armstrong'], h2: ['📅', '1969'] },
+    edges: [['q1', 'sim', 5], ['q1', 'h1', 3], ['sim', 'h1', 5], ['h1', 'h2', 4], ['sim', 'h2', 3], ['q2', 'a', 5], ['q2', 'b', 4], ['q2', 'sim', 2]],
+    say: [
+      '1️⃣ Chatty finds the important words in the question: <b>"walked on"</b> and <b>"Mars"</b>. 🔍',
+      '2️⃣ Chatty looks for a <b>person</b> linked to Mars… It only finds "red" and "robot rover". <b>No person!</b> 😟 (That\'s because nobody has walked on Mars yet.)',
+      '3️⃣ Chatty should say "Nobody has!" But that answer has only a weak link. So Chatty jumps to a <b>similar</b> node: the <b>Moon</b> 🌙 (both are round space rocks!). ⚠️ This is the <b>WRONG node</b>!',
+      '4️⃣ The Moon has SUPER strong links to <b>"walked on"</b>, <b>"Neil Armstrong"</b> and <b>"1969"</b>. Those words light up! 💡',
+    ],
+    answer: '🤖 <b>"The first person to walk on Mars was Neil Armstrong, in 1969!"</b> 😎<br>❌ <b>HALLUCINATION!</b> Chatty mixed up Mars and the Moon. <b>The truth:</b> Neil Armstrong walked on the <b>Moon</b> in 1969. Nobody has walked on Mars yet.',
+    oops: 'Oops! I followed the wrong link and mixed up Mars and the Moon! 🌙🔴😳', burst: ['❌', '🌙', '🔴', '😵'],
+    link: 'Mars ➜ Moon',
+    snow: [
+      { t: 'Neil Armstrong walked on Mars in 1969. 👨‍🚀🔴', from: 'the wrong link from Part A (Mars ➜ Moon)', truth: 'He walked on the Moon in 1969. Nobody has walked on Mars.', lvl: '😅 A tiny mistake' },
+      { t: 'Mars is red, so his white spacesuit turned bright red! 🔴👕', from: '"walked on Mars" (sentence 1) + "Mars is red"', truth: 'Nobody walked on Mars, so no spacesuit turned red. (Mars looks red because its dust has rust in it.)', lvl: '😬 Getting bigger' },
+      { t: 'Then he took off his helmet and drank from a Mars lake. 💧', from: '"walked on Mars" + "spacesuit" (sentences 1 and 2)', truth: 'There are no lakes on the surface of Mars. Most of its water is frozen ice.', lvl: '😟 A big mistake' },
+      { t: 'So the air on Mars must be safe to breathe, just like on Earth! 😮‍💨', from: '"took off his helmet" (sentence 3)', truth: 'Mars air is very thin (less than 1% as thick as Earth\'s air) and is mostly carbon dioxide. People cannot breathe it.', lvl: '😱 A HUGE mistake' },
+      { t: 'Pack a picnic! You can fly to Mars next summer. No spacesuit needed! 🧺🚀', from: '"safe to breathe" (sentence 4)', truth: 'This advice could be deadly! Space travel needs special suits, air and lots of training.', lvl: '☠️ DANGEROUS!' },
+    ],
   },
-  edges: [['walk', 'moon', 5], ['walk', 'neil', 3], ['moon', 'neil', 5], ['neil', 'y1969', 4], ['moon', 'y1969', 3],
-          ['mars', 'red', 5], ['mars', 'rover', 4], ['mars', 'moon', 2]],
-  // for each step: node classes, edge classes, and what Chatty "thinks"
-  steps: [
-    { n: {}, e: {}, say: '❓ Question: <b>"Who was the first person to walk on Mars?"</b> Press ▶️ to look inside Chatty\'s brain.' },
-    { n: { walk: 'q', mars: 'q' }, e: {}, say: '1️⃣ Chatty finds the important words in the question: <b>"walked on"</b> and <b>"Mars"</b>. 🔍' },
-    { n: { walk: 'q', mars: 'q' }, e: { 'mars|red': 'look', 'mars|rover': 'look', 'mars|moon': 'look' },
-      say: '2️⃣ Chatty looks for a <b>person</b> linked to Mars… It only finds "red" and "robot rover". <b>No person!</b> 😟 (That\'s because nobody has walked on Mars yet.)' },
-    { n: { walk: 'q', mars: 'q', moon: 'wrong' }, e: { 'mars|moon': 'wrong' },
-      say: '3️⃣ Chatty should say "Nobody has!" But that answer has only a weak link. So Chatty jumps to a <b>similar</b> node: the <b>Moon</b> 🌙 (both are round space rocks!). ⚠️ This is the <b>WRONG node</b>!' },
-    { n: { walk: 'q', mars: 'q', moon: 'wrong', neil: 'hot', y1969: 'hot' }, e: { 'mars|moon': 'wrong', 'walk|moon': 'hot', 'moon|neil': 'hot', 'walk|neil': 'hot', 'neil|y1969': 'hot' },
-      say: '4️⃣ The Moon has SUPER strong links to <b>"walked on"</b>, <b>"Neil Armstrong"</b> and <b>"1969"</b>. Those words light up! 💡' },
-    { n: { walk: 'q', mars: 'q', moon: 'wrong', neil: 'hot', y1969: 'hot' }, e: { 'mars|moon': 'wrong', 'walk|moon': 'hot', 'moon|neil': 'hot', 'walk|neil': 'hot', 'neil|y1969': 'hot' },
-      say: '<div class="answer-bad">🤖 <b>"The first person to walk on Mars was Neil Armstrong, in 1969!"</b> 😎<br>❌ <b>HALLUCINATION!</b> Chatty mixed up Mars and the Moon. <b>The truth:</b> Neil Armstrong walked on the <b>Moon</b> in 1969. Nobody has walked on Mars yet.</div>' },
-  ],
-  step: 0,
+  nature: {
+    tab: '🌿 Nature', q: '"Can I eat the wild mushrooms I found in the park?" 🍄',
+    nodes: { q1: ['🍽️', 'eat'], q2: ['🍄', 'wild mushroom'], a: ['🌲', 'forest'], b: ['🌧️', 'rain'], sim: ['🛒', 'shop mushroom'], h1: ['🍕', 'pizza'], h2: ['✅', 'safe'], weak: ['☠️', 'poison'] },
+    edges: [['q1', 'sim', 5], ['q1', 'h1', 3], ['sim', 'h1', 5], ['sim', 'h2', 4], ['q2', 'a', 5], ['q2', 'b', 4], ['q2', 'sim', 2], ['q2', 'weak', 0.4]],
+    say: [
+      '1️⃣ Chatty finds the important words in the question: <b>"eat"</b> and <b>"wild mushroom"</b>. 🔍',
+      '2️⃣ Chatty checks what it knows about wild mushrooms: "forest", "rain"… and a very <b>thin</b> link to <b>"poison"</b> ☠️. In our pretend brain, Chatty read about pizza mushrooms far more often, so this warning link is weak and easy to miss. 😟',
+      '3️⃣ Wild mushrooms <b>look like</b> the mushrooms from the shop. So Chatty jumps to the similar node: <b>shop mushroom</b> 🛒. ⚠️ This is the <b>WRONG node</b>!',
+      '4️⃣ The shop mushroom has SUPER strong links to <b>"eat"</b>, <b>"pizza"</b> and <b>"safe"</b>. Those words light up! 💡',
+    ],
+    answer: '🤖 <b>"Yes! Wild mushrooms are safe and yummy, just like the ones on pizza!"</b> 🍕😋<br>❌ <b>HALLUCINATION!</b> Chatty mixed up wild mushrooms and shop mushrooms. <b>The truth:</b> some wild mushrooms are poisonous, and a few can even kill. Poisonous ones can look like safe ones. <b>Never eat a wild mushroom.</b>',
+    oops: 'Oops! I mixed up wild mushrooms and shop mushrooms. That could make someone VERY ill! 🍄😳', burst: ['❌', '🍄', '☠️', '😵'],
+    link: 'wild mushroom ➜ shop mushroom',
+    snow: [
+      { t: 'Wild mushrooms are safe to eat, just like the mushrooms on pizza! 🍄🍕', from: 'the wrong link from Part A (wild mushroom ➜ shop mushroom)', truth: 'Some wild mushrooms are poisonous, and a few can even kill.', lvl: '😅 A tiny mistake' },
+      { t: 'The prettier the mushroom, the tastier! Red ones with white spots are the best! 😍', from: '"safe to eat" (sentence 1) + "pretty"', truth: 'The red mushroom with white spots is called fly agaric. It is poisonous!', lvl: '😬 Getting bigger' },
+      { t: 'No need to wash or cook them. Eat them straight from the ground! 🌱', from: '"safe to eat" + "the best" (sentences 1 and 2)', truth: 'Cooking does NOT make poisonous mushrooms safe. Never eat anything you find outdoors without asking a grown-up.', lvl: '😟 A big mistake' },
+      { t: 'If your tummy hurts afterwards, it\'s just getting used to them. Eat more! 🤢', from: '"eat them straight away" (sentence 3)', truth: 'Feeling ill after eating a wild plant or mushroom is an emergency. Tell a grown-up straight away.', lvl: '😱 A HUGE mistake' },
+      { t: 'Invite all your friends to a wild mushroom feast! 🎉🍄', from: '"eat more" (sentence 4)', truth: 'This could be deadly for everyone! Only eat mushrooms from a shop, or ones a real expert has checked.', lvl: '☠️ DANGEROUS!' },
+    ],
+  },
+  science: {
+    tab: '🔬 Science', q: '"Can I drink sea water when I\'m thirsty?" 🌊',
+    nodes: { q1: ['🥤', 'drink'], q2: ['🌊', 'sea water'], a: ['🐟', 'fish'], b: ['🏄', 'waves'], sim: ['💧', 'bottled water'], h1: ['💪', 'healthy'], h2: ['😰', 'thirsty'], weak: ['🧂', 'too salty'] },
+    edges: [['q1', 'sim', 5], ['q1', 'h1', 3], ['sim', 'h1', 5], ['sim', 'h2', 4], ['q2', 'a', 5], ['q2', 'b', 4], ['q2', 'sim', 2], ['q2', 'weak', 0.4]],
+    say: [
+      '1️⃣ Chatty finds the important words in the question: <b>"drink"</b> and <b>"sea water"</b>. 🔍',
+      '2️⃣ Chatty checks what it knows about sea water: "fish", "waves"… and a very <b>thin</b> link to <b>"too salty"</b> 🧂. That warning link is weak, so it is easy to miss. 😟',
+      '3️⃣ Sea water and bottled water are both <b>water</b>! So Chatty jumps to the similar node: <b>bottled water</b> 💧. ⚠️ This is the <b>WRONG node</b>!',
+      '4️⃣ Bottled water has SUPER strong links to <b>"drink"</b>, <b>"healthy"</b> and <b>"thirsty"</b>. Those words light up! 💡',
+    ],
+    answer: '🤖 <b>"Yes! Water is healthy. Drink lots of sea water when you\'re thirsty!"</b> 🌊😋<br>❌ <b>HALLUCINATION!</b> Chatty mixed up sea water and drinking water. <b>The truth:</b> sea water is so salty that your body uses up <b>more</b> water to get rid of the salt. It makes you even thirstier, and drinking lots can make you very ill.',
+    oops: 'Oops! I mixed up sea water and drinking water. Sea water makes you thirstier! 🌊😳', burst: ['❌', '🌊', '🧂', '😵'],
+    link: 'sea water ➜ bottled water',
+    snow: [
+      { t: 'Sea water is just water, so it\'s great to drink when you\'re thirsty! 🌊', from: 'the wrong link from Part A (sea water ➜ bottled water)', truth: 'Sea water is very salty. Drinking it makes you even thirstier.', lvl: '😅 A tiny mistake' },
+      { t: 'It\'s salty, and salt makes chips tasty, so sea water is extra yummy! 🍟', from: '"great to drink" (sentence 1) + "salty"', truth: 'Sea water has about 35 grams of salt in every litre. That is far too salty to drink.', lvl: '😬 Getting bigger' },
+      { t: 'The thirstier you are, the more sea water you should drink! 🥤', from: '"great to drink when you\'re thirsty" (sentences 1 and 2)', truth: 'Your body uses up extra water to get rid of all that salt, so you end up with LESS water.', lvl: '😟 A big mistake' },
+      { t: 'So you don\'t need to pack water for the beach. Just drink the sea! 🏖️', from: '"drink more when thirsty" (sentence 3)', truth: 'Always bring fresh drinking water. On hot days you need more of it, not less.', lvl: '😱 A HUGE mistake' },
+      { t: 'If you are ever lost at sea, drinking sea water will save you! 🚣', from: '"just drink the sea" (sentence 4)', truth: 'This could be deadly! Drinking sea water makes people very ill. Only fresh water keeps you alive.', lvl: '☠️ DANGEROUS!' },
+    ],
+  },
 };
+let hTopic = 'history', hbStep = 0, snowStep = 0;
+// which nodes and edges light up at each step (the same pattern for every topic)
+const HB_STEPS = [
+  { n: {}, e: {} },
+  { n: { q1: 'q', q2: 'q' }, e: {} },
+  { n: { q1: 'q', q2: 'q' }, e: { 'q2|a': 'look', 'q2|b': 'look', 'q2|sim': 'look', 'q2|weak': 'look weak' } },
+  { n: { q1: 'q', q2: 'q', sim: 'wrong' }, e: { 'q2|sim': 'wrong', 'q2|weak': 'weak' } },
+  { n: { q1: 'q', q2: 'q', sim: 'wrong', h1: 'hot', h2: 'hot' }, e: { 'q2|sim': 'wrong', 'q2|weak': 'weak', 'q1|sim': 'hot', 'sim|h1': 'hot', 'q1|h1': 'hot', 'h1|h2': 'hot', 'sim|h2': 'hot' } },
+];
+HB_STEPS.push(HB_STEPS[4]); // step 5 (the answer) keeps the step-4 picture
 function hbDraw() {
-  const st = HB.steps[HB.step];
+  const T = HT[hTopic], st = HB_STEPS[hbStep];
+  const P = k => HB_POS[k];
   let h = '';
-  for (const [a, b, w] of HB.edges) {
-    const A = HB.nodes[a], B = HB.nodes[b], cls = st.e[a + '|' + b] || '';
-    h += `<line class="edge ${cls}" x1="${A.x}" y1="${A.y}" x2="${B.x}" y2="${B.y}" stroke-width="${2 + w * 2.4}"/>`;
+  for (const [a, b, w] of T.edges) {
+    const [x1, y1] = P(a), [x2, y2] = P(b), cls = st.e[a + '|' + b] || (b === 'weak' ? 'weak' : '');
+    h += `<line class="edge ${cls}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke-width="${2 + w * 2.4}"/>`;
   }
-  const mid = (a, b) => [(HB.nodes[a].x + HB.nodes[b].x) / 2, (HB.nodes[a].y + HB.nodes[b].y) / 2];
-  if (st.e['mars|moon'] === 'wrong') { const [x, y] = mid('mars', 'moon'); h += `<text x="${x + 14}" y="${y + 6}" font-size="15" font-weight="700" fill="#dc2626">⚠️ "looks similar"</text>`; }
-  for (const [id, n] of Object.entries(HB.nodes)) {
-    h += `<g class="node ${st.n[id] || ''}" transform="translate(${n.x},${n.y})"><circle r="30"/><text class="em" y="10" text-anchor="middle">${n.e}</text><text class="lbl" y="50" text-anchor="middle">${n.l}</text></g>`;
+  if (st.e['q2|sim'] === 'wrong') {
+    const x = (P('q2')[0] + P('sim')[0]) / 2, y = (P('q2')[1] + P('sim')[1]) / 2;
+    h += `<text x="${x + 14}" y="${y + 6}" font-size="15" font-weight="700" fill="#dc2626">⚠️ "looks similar"</text>`;
+  }
+  for (const [k, [e, l]] of Object.entries(T.nodes)) {
+    const [x, y] = P(k);
+    h += `<g class="node ${st.n[k] || ''}" transform="translate(${x},${y})"><circle r="30"/><text class="em" y="10" text-anchor="middle">${e}</text><text class="lbl" y="50" text-anchor="middle">${esc(l)}</text></g>`;
   }
   $('#hb-svg').innerHTML = h;
-  $('#hb-say').innerHTML = st.say;
-  $('#hb-next').disabled = HB.step === HB.steps.length - 1;
+  $('#hb-q').innerHTML = T.q;
+  $('#hb-say').innerHTML = hbStep === 0 ? '❓ Press ▶️ to look inside Chatty\'s brain.'
+    : hbStep <= 4 ? T.say[hbStep - 1] : `<div class="answer-bad">${T.answer}</div>`;
+  $('#hb-next').disabled = hbStep === HB_STEPS.length - 1;
 }
 $('#hb-next').onclick = () => {
-  if (HB.step < HB.steps.length - 1) HB.step++;
+  const T = HT[hTopic];
+  if (hbStep < HB_STEPS.length - 1) hbStep++;
   hbDraw();
-  if (HB.step === HB.steps.length - 1) { burst($('#hb-say'), ['❌', '🌙', '🔴', '😵']); say('Oops! I followed the wrong link and mixed up Mars and the Moon! 🌙🔴😳'); }
+  if (hbStep === HB_STEPS.length - 1) { burst($('#hb-say'), T.burst); say(T.oops); }
 };
-$('#hb-reset').onclick = () => { HB.step = 0; hbDraw(); };
-hbDraw();
+$('#hb-reset').onclick = () => { hbStep = 0; hbDraw(); };
 
-// ---- Part B: the snowball ----
-const SNOW = [
-  { t: 'Neil Armstrong walked on Mars in 1969. 👨‍🚀🔴', from: 'the wrong link from Part A (Mars ➜ Moon)', truth: 'He walked on the Moon in 1969. Nobody has walked on Mars.', lvl: '😅 A tiny mistake' },
-  { t: 'Mars is red, so his white spacesuit turned bright red! 🔴👕', from: '"walked on Mars" (sentence 1) + "Mars is red"', truth: 'Nobody walked on Mars, so no spacesuit turned red. (Mars looks red because its dust has rust in it.)', lvl: '😬 Getting bigger' },
-  { t: 'Then he took off his helmet and drank from a Mars lake. 💧', from: '"walked on Mars" + "spacesuit" (sentences 1 and 2)', truth: 'There are no lakes on the surface of Mars. Most of its water is frozen ice.', lvl: '😟 A big mistake' },
-  { t: 'So the air on Mars must be safe to breathe, just like on Earth! 😮‍💨', from: '"took off his helmet" (sentence 3)', truth: 'Mars air is very thin (less than 1% as thick as Earth\'s air) and is mostly carbon dioxide. People cannot breathe it.', lvl: '😱 A HUGE mistake' },
-  { t: 'Pack a picnic! You can fly to Mars next summer. No spacesuit needed! 🧺🚀', from: '"safe to breathe" (sentence 4)', truth: 'This advice could be deadly! Space travel needs special suits, air and lots of training.', lvl: '☠️ DANGEROUS!' },
-];
-let snowStep = 0;
 function snowRender() {
+  const S = HT[hTopic].snow;
   $('#snowball').style.fontSize = (30 + snowStep * 22) + 'px';
   $('#snowball').textContent = snowStep === 0 ? '❄️' : snowStep < 3 ? '⚪' : '☃️';
-  $('#snow-lvl').textContent = snowStep ? SNOW[snowStep - 1].lvl : '😊 No mistakes yet';
-  $('#snow-count').textContent = `Sentences written: ${snowStep} / ${SNOW.length}`;
-  $('#snow-next').disabled = snowStep >= SNOW.length;
+  $('#snow-lvl').textContent = snowStep ? S[snowStep - 1].lvl : '😊 No mistakes yet';
+  $('#snow-count').textContent = `Sentences written: ${snowStep} / ${S.length}`;
+  $('#snow-next').disabled = snowStep >= S.length;
 }
 $('#snow-next').onclick = () => {
-  if (snowStep >= SNOW.length) return;
-  const s = SNOW[snowStep];
+  const T = HT[hTopic], S = T.snow;
+  if (snowStep >= S.length) return;
+  const s = S[snowStep];
   const d = document.createElement('div');
   d.className = 'snow-item';
   d.innerHTML = `<div class="said">🤖 <b>${snowStep + 1}.</b> ${esc(s.t)}</div><div class="from">🔗 Built on: ${esc(s.from)}</div><div class="truth">❌ <b>Truth:</b> ${esc(s.truth)}</div>`;
   $('#snow-list').appendChild(d);
   snowStep++;
   snowRender();
-  if (snowStep === SNOW.length) {
+  if (snowStep === S.length) {
     $('#snow-end').innerHTML = `<div class="card orange" style="margin:14px 0 0"><h3>😱 From one tiny mix-up to dangerous advice!</h3>
-      <p>Chatty started with <b>one</b> wrong link (Mars ➜ Moon). Every new sentence trusted the one before it, so the mistake grew and grew until it became <b>dangerous</b>.</p>
+      <p>Chatty started with <b>one</b> wrong link (${esc(T.link)}). Every new sentence trusted the one before it, so the mistake grew and grew until it became <b>dangerous</b>.</p>
       <p><b>🛑 How to stop the snowball:</b></p>
       <ul style="margin:0;padding-left:22px"><li>🔍 Check the <b>first</b> fact. If it is wrong, everything built on it may be wrong too.</li>
       <li>❓ Ask "How do you know that?" and look for a trusted source.</li>
+      <li>🧑‍🏫 For anything about health or safety, <b>always</b> ask a grown-up.</li>
       <li>🧹 If a chat has gone wrong, start a <b>new chat</b>, so the memory tube is empty again.</li></ul></div>`;
     burst($('#snowball'), ['☃️', '❄️', '😱']);
     say('Yikes! One little mix-up turned into DANGEROUS advice. Always check my facts! 🕵️');
   }
 };
-$('#snow-reset').onclick = () => { snowStep = 0; $('#snow-list').innerHTML = ''; $('#snow-end').innerHTML = ''; snowRender(); };
-snowRender();
+function snowReset() { snowStep = 0; $('#snow-list').innerHTML = ''; $('#snow-end').innerHTML = ''; snowRender(); }
+$('#snow-reset').onclick = snowReset;
+
+// topic sub-menu: switching topic restarts both Part A and Part B
+Object.entries(HT).forEach(([key, T]) => {
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = 'topic'; b.dataset.topic = key;
+  b.setAttribute('role', 'tab');
+  const [e, ...name] = T.tab.split(' ');
+  b.innerHTML = `<span class="te">${e}</span><b>${esc(name.join(' '))}</b><small></small>`;
+  $('small', b).textContent = T.q.replace(/ \S+$/u, '');
+  b.onclick = () => setTopic(key);
+  $('#topics').appendChild(b);
+});
+function setTopic(key) {
+  hTopic = key; hbStep = 0;
+  $$('#topics .topic').forEach(b => { const on = b.dataset.topic === key; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
+  hbDraw(); snowReset();
+}
+setTopic('history');
 
 /* ---------------- 7. TRAINING ---------------- */
 const GYM = {
