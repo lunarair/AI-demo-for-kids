@@ -131,19 +131,7 @@ button.bar-row:hover{background:var(--yellow-soft)}
 /* context */
 .ctxcard .out{margin-top:10px;font-size:20px;min-height:36px}
 .ctxcard .out .emo{font-size:40px;vertical-align:middle}
-.pack{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}
-.slot{min-height:64px;border-radius:14px;border:3px dashed #c4b5fd;padding:6px;font-size:13px;display:flex;align-items:center;justify-content:center;text-align:center;background:#faf7ff;word-break:break-word;line-height:1.25}
-.slot.full{border-style:solid;background:#fff;animation:pop .3s}
-.slot.you{border-color:var(--blue)} .slot.bot{border-color:var(--pink)}
-.chatlog{max-height:340px;overflow:auto;display:flex;flex-direction:column;gap:6px;padding:10px;background:#fff;border-radius:16px;border:2px solid var(--line)}
-.msg{max-width:85%;padding:8px 12px;border-radius:16px;font-size:16px}
-.msg.you{align-self:flex-end;background:var(--blue-soft)}
-.msg.bot{align-self:flex-start;background:var(--pink-soft)}
-.msg.gone{opacity:.45}
-.msg.gone .t{text-decoration:line-through}
-.msg .gone-tag{font-size:12px;margin-left:6px;font-weight:600}
 #name-input{font:inherit;padding:8px 12px;border-radius:999px;border:3px solid var(--blue);width:150px;color:var(--ink)}
-.packmeter{font-weight:600}
 
 /* temperature */
 .thermo{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
@@ -176,13 +164,121 @@ select{font:inherit;padding:8px 12px;border-radius:999px;border:3px solid var(--
 .rl-opts{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));margin:10px 0}
 .rl-opt{background:#fff;color:var(--ink);text-align:left;border-radius:16px;padding:12px 14px;box-shadow:0 3px 0 var(--line);font-weight:500}
 .rl-opt:hover{background:var(--yellow-soft)}
-.meter{height:22px;background:#fff;border-radius:999px;overflow:hidden;border:2px solid var(--line)}
-.meter span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--yellow),var(--green));transition:width .5s}
 .timeline{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
 .tl{background:#fff;border-radius:18px;padding:14px;box-shadow:0 3px 0 var(--line);position:relative}
 .tl .n{position:absolute;top:-12px;left:-6px;background:var(--orange);color:#fff;border-radius:999px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:700}
 .tl .e{font-size:38px}
 .chatdemo{background:#fff;border-radius:16px;padding:12px;border:2px solid var(--line);min-height:110px;margin-top:10px}
+
+/* cover */
+.cover{text-align:center;background:linear-gradient(135deg,#ede9fe,#fce7f3 50%,#dbeafe);border-radius:28px;padding:24px 18px;box-shadow:var(--shadow);margin-bottom:18px}
+.cover .hero-bot{font-size:110px;line-height:1;display:inline-block;animation:bob 2s ease-in-out infinite}
+.cover .wave{display:inline-block;font-size:56px;animation:wave 1.2s ease-in-out infinite;transform-origin:70% 70%}
+@keyframes wave{0%,100%{transform:rotate(0)}50%{transform:rotate(25deg)}}
+.bigbubble{background:#fff;border-radius:22px;padding:14px 18px;margin:14px auto 0;max-width:640px;font-size:21px;box-shadow:var(--shadow);position:relative}
+.bigbubble::before{content:'';position:absolute;top:-12px;left:50%;margin-left:-12px;border:12px solid transparent;border-bottom-color:#fff;border-top:0}
+#kid-name{font:inherit;padding:10px 14px;border-radius:999px;border:3px solid var(--purple);width:min(240px,100%);color:var(--ink);text-align:center;background:#fff}
+.fav button{font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif;font-weight:400;font-size:30px;padding:8px 14px;background:#fff;box-shadow:0 3px 0 var(--line)}
+.fav button.picked{background:var(--yellow)}
+.idcard{display:grid;grid-template-columns:auto 1fr;gap:8px 14px;margin:0}
+.idcard dt{font-weight:700;white-space:nowrap}
+.idcard dd{margin:0}
+.expect{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.expect div{background:#fff;border-radius:16px;padding:12px;box-shadow:0 3px 0 var(--line)}
+.expect .e{font-size:30px;display:block}
+.startbtn{font-size:24px;padding:14px 28px}
+
+/* memory tube (context) */
+.stackwrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:700px){.stackwrap{grid-template-columns:1fr}}
+.btncol{display:flex;flex-direction:column;gap:8px;align-items:stretch}
+.btncol button{text-align:left}
+#latest{background:var(--pink-soft);border-radius:16px;padding:10px 14px;font-size:18px;min-height:52px;margin-top:6px}
+.tube-top{text-align:center;font-weight:600;color:var(--purple);font-size:15px}
+.tube{background:#faf7ff;border:4px solid var(--purple);border-bottom:none;border-radius:22px 22px 0 0;padding:8px;display:flex;flex-direction:column;gap:6px}
+.tube-hole{text-align:center;border-top:5px dashed var(--red);color:var(--red);font-weight:600;font-size:15px;padding-top:4px}
+.mem{min-height:46px;border-radius:12px;padding:6px 10px;font-size:15px;display:flex;align-items:center;gap:8px;line-height:1.25}
+.mem.empty{border:2px dashed #d8cffc;color:#a39bc7;justify-content:center}
+.mem.you{background:var(--blue-soft);border:2px solid var(--blue)}
+.mem.bot{background:var(--pink-soft);border:2px solid var(--pink)}
+.mem.new{animation:dropin .5s both}
+@keyframes dropin{from{transform:translateY(-40px);opacity:0}}
+.mem .n{font-size:12px;font-weight:700;color:var(--muted);min-width:24px}
+.forgot{margin-top:8px;display:flex;flex-direction:column;gap:6px}
+.forgot .mem{opacity:.55;background:#eee;border:2px solid #ccc}
+.forgot .mem .t{text-decoration:line-through}
+.forgot .mem.justfell{animation:fall 1s both}
+@keyframes fall{0%{transform:translateY(-70px) rotate(0);opacity:1}60%{transform:translateY(12px) rotate(-6deg);opacity:1}100%{transform:none;opacity:.55}}
+#fell-msg{min-height:28px;font-weight:600;color:var(--red);text-align:center}
+
+/* temperature sentences */
+.sent{background:#fff;border-radius:14px;padding:8px 12px;box-shadow:0 2px 0 var(--line);animation:drop .35s both;font-size:17px}
+.sent .wild{background:var(--orange-soft);border-radius:6px;padding:0 4px;font-weight:600;color:#9a3412}
+.sent small{color:var(--muted);display:block}
+.versus{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:10px}
+
+/* hallucination brain + snowball */
+#hb-svg{width:100%;height:auto;background:#fcfbff;border-radius:18px;border:2px solid var(--line)}
+#hb-svg .edge{stroke:#d8cffc;stroke-linecap:round;transition:.4s}
+#hb-svg .edge.look{stroke:var(--blue)}
+#hb-svg .edge.wrong{stroke:var(--red);stroke-dasharray:10 8;animation:dash 1s linear infinite}
+#hb-svg .edge.hot{stroke:var(--orange)}
+@keyframes dash{to{stroke-dashoffset:-36}}
+#hb-svg .node circle{fill:#fff;stroke:#c4b5fd;stroke-width:3;transition:.3s}
+#hb-svg .node.q circle{fill:var(--yellow-soft);stroke:var(--pink);stroke-width:5}
+#hb-svg .node.wrong circle{fill:var(--red-soft);stroke:var(--red);stroke-width:5}
+#hb-svg .node.hot circle{fill:var(--orange-soft);stroke:var(--orange);stroke-width:5}
+#hb-svg .node .em{font-size:28px}
+#hb-svg .node .lbl{font-size:17px;font-weight:600;fill:var(--ink);font-family:inherit}
+#hb-say{font-size:19px;min-height:60px;margin:10px 0}
+.answer-bad{background:var(--red-soft);border:3px solid var(--red);border-radius:16px;padding:10px 14px;animation:pop .4s}
+.snowrow{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+#snowball{font-size:30px;line-height:1;transition:font-size .6s;display:inline-block;animation:roll 2s linear infinite}
+@keyframes roll{to{transform:rotate(360deg)}}
+.snowlvl{font-size:22px;font-weight:700}
+.snow-list{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.snow-item{background:#fff;border-radius:16px;padding:10px 14px;box-shadow:0 3px 0 var(--line);animation:pop .4s}
+.snow-item .said{font-size:19px}
+.snow-item .from{font-size:14px;color:var(--blue);margin-top:4px}
+.snow-item .truth{font-size:15px;background:var(--red-soft);border-radius:10px;padding:6px 10px;margin-top:6px}
+
+/* angel / demon meter */
+.am-ends{display:flex;justify-content:space-between;font-weight:700;font-size:20px}
+.am-track{position:relative;height:28px;background:linear-gradient(90deg,#fecaca,#fff 50%,#bbf7d0);border-radius:999px;border:2px solid var(--line);margin:34px 0 10px}
+.am-mid{position:absolute;left:50%;top:-8px;bottom:-8px;width:3px;margin-left:-1px;background:var(--ink);opacity:.4}
+.am-fill{position:absolute;top:0;bottom:0;border-radius:999px;transition:.6s}
+.am-marker{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);line-height:1;transition:left .6s,font-size .6s}
+#am-label{text-align:center;font-weight:600;font-size:18px}
+.conseq{border-radius:16px;padding:12px 14px;margin-top:10px;animation:pop .4s}
+.conseq.good{background:#fff;border:3px solid var(--green)}
+.conseq.bad{background:#fff;border:3px solid var(--red)}
+.conseq .future{background:var(--purple-soft);border-radius:12px;padding:8px 12px;margin:8px 0}
+.rl-opt.chosen{outline:4px solid var(--orange)}
+.lesson-list{list-style:none;padding:0;margin:8px 0;display:grid;gap:4px;font-size:16px}
+
+/* badge */
+.pledges{display:grid;gap:8px}
+.pledge{display:flex;gap:12px;align-items:flex-start;background:#fff;border-radius:16px;padding:10px 14px;box-shadow:0 3px 0 var(--line);cursor:pointer;transition:.2s}
+.pledge input{width:26px;height:26px;accent-color:var(--green);flex:0 0 auto;margin-top:3px;cursor:pointer}
+.pledge.on{background:var(--green-soft)}
+.pledge small{display:block;color:var(--muted);font-size:15px}
+.medal-wrap{text-align:center;padding-top:6px;transition:filter .6s,opacity .6s}
+.medal-wrap.locked{filter:grayscale(1);opacity:.45}
+.ribbons{position:relative;height:80px;width:170px;margin:0 auto -30px}
+.ribbons span{position:absolute;top:0;width:56px;height:100px;clip-path:polygon(0 0,100% 0,100% 100%,50% 82%,0 100%)}
+.ribbons span:first-child{left:24px;transform:rotate(16deg);background:var(--purple)}
+.ribbons span:last-child{right:24px;transform:rotate(-16deg);background:var(--pink)}
+.medal{position:relative;z-index:1;width:230px;height:230px;margin:0 auto;border-radius:50%;background:conic-gradient(#fde047,#f59e0b,#fde047,#f59e0b,#fde047);padding:14px;box-shadow:0 8px 0 #b45309,0 14px 30px rgba(0,0,0,.2)}
+.medal-inner{width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fffbeb,#fde68a);border:4px dashed #d97706;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.m-top,.m-title{font-weight:700;letter-spacing:2px;color:#92400e}
+.m-bot{font-size:78px;line-height:1.05}
+.m-title{font-size:21px}
+.m-name{font-size:32px;font-weight:700;margin-top:16px;word-break:break-word}
+.m-date{color:var(--muted)}
+.m-stops{font-size:26px;letter-spacing:6px;margin-top:6px}
+.medal-wrap.unlocked .medal{animation:spinin 1.1s ease-out}
+@keyframes spinin{from{transform:rotateY(540deg) scale(.4)}}
+.letter{background:#fffdf5;border:3px dashed var(--yellow);border-radius:18px;padding:16px 18px;font-size:19px;animation:pop .5s}
 
 .burst{position:fixed;pointer-events:none;font-size:30px;z-index:99;animation:burst 1.2s ease-out forwards}
 @keyframes burst{to{transform:translate(var(--dx),var(--dy)) rotate(360deg);opacity:0}}
@@ -210,8 +306,60 @@ select{font:inherit;padding:8px 12px;border-radius:999px;border:3px solid var(--
 </div>
 
 <main>
+<!-- ================= COVER ================= -->
+<section class="page" data-nav="📘 Cover" data-label="Cover" data-say="Hi! I'm Chatty 🤖">
+  <div class="cover">
+    <div><span class="hero-bot">🤖</span><span class="wave">👋</span></div>
+    <div class="bigbubble" id="cover-say" aria-live="polite">Hi there! I'm <b>Chatty</b>, a friendly AI robot. I'm so happy you're here! What's your name?</div>
+    <div class="row" style="justify-content:center;margin-top:14px">
+      <input id="kid-name" type="text" maxlength="16" placeholder="Type your name" aria-label="Your name">
+      <button type="button" id="kid-hi">👋 Say hi!</button>
+    </div>
+    <div id="fav-box" hidden>
+      <p class="big" style="margin:16px 0 6px">Which one do you like best?</p>
+      <div class="row fav" style="justify-content:center">
+        <button type="button" data-fav="dog" aria-label="Dogs">🐶</button>
+        <button type="button" data-fav="cat" aria-label="Cats">🐱</button>
+        <button type="button" data-fav="unicorn" aria-label="Unicorns">🦄</button>
+        <button type="button" data-fav="dino" aria-label="Dinosaurs">🦖</button>
+        <button type="button" data-fav="pizza" aria-label="Pizza">🍕</button>
+        <button type="button" data-fav="sport" aria-label="Sport">⚽</button>
+        <button type="button" data-fav="art" aria-label="Art">🎨</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>🪪 Chatty's ID card</h3>
+      <dl class="idcard">
+        <dt>📛 Name</dt><dd>Chatty</dd>
+        <dt>🤖 What I am</dt><dd>A <b>Large Language Model</b>: a computer program that is super good at guessing words</dd>
+        <dt>🎂 Age</dt><dd>Brand new! But I have read more words than you could read in thousands of years 📚</dd>
+        <dt>🦸 Superpower</dt><dd>Guessing the next word, super fast ⚡</dd>
+        <dt>🙈 Weakness</dt><dd>Sometimes I make things up without knowing it. You will help me catch it!</dd>
+        <dt>🍕 Favourite food</dt><dd>I can't eat! But I have read loads of pizza recipes 😋</dd>
+        <dt>💛 Important</dt><dd>I am <b>not a person</b>. I am a computer program: a fun tool to learn with, not a replacement for real friends.</dd>
+      </dl>
+    </div>
+    <div class="card yellow">
+      <h3>🧭 What to expect</h3>
+      <div class="expect">
+        <div><span class="e">🗺️</span><b>A warm-up and 7 stops.</b> Each stop explains one big idea about how AI thinks.</div>
+        <div><span class="e">🎮</span><b>Play, don't just read!</b> You will click, guess, build stories and even train me.</div>
+        <div><span class="e">😂</span><b>Lots of laughs.</b> Tap me any time for a robot joke.</div>
+        <div><span class="e">⭐</span><b>Collect stars.</b> Every stop you visit gets a star in the menu at the top.</div>
+        <div><span class="e">🏅</span><b>Earn a badge.</b> At the end, make the AI promises and get your own AI Explorer badge.</div>
+        <div><span class="e">❓</span><b>Mistakes are OK!</b> AI learns from mistakes, and so do we.</div>
+        <div><span class="e">👩‍🏫</span><b>"For grown-ups" boxes</b> have extra details for parents and teachers. You can skip them.</div>
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center;margin:6px 0 16px"><button type="button" class="startbtn btn-pink" id="cover-go">🚀 Start the adventure!</button></div>
+</section>
+
 <!-- ================= START ================= -->
-<section class="page" data-nav="🏠 Start" data-say="Hi! I'm Chatty 🤖, a word-guessing robot. Let's go on an adventure inside my brain!">
+<section class="page" data-nav="🏠 Warm-up" data-label="Warm-up" data-say="Hi {name}! Let's warm up our brains with a guessing game! 🎯">
   <h2>👋 Hello, AI Explorer!</h2>
   <div class="card">
     <p class="big">Chatbots like ChatGPT, Claude and Gemini run on something called a <b>Large Language Model</b> (LLM for short).</p>
@@ -236,7 +384,7 @@ select{font:inherit;padding:8px 12px;border-radius:999px;border:3px solid var(--
 </section>
 
 <!-- ================= 1. WORD BRAIN ================= -->
-<section class="page" data-nav="🧠 Word Brain" data-say="Click 'Read a sentence' and watch my word brain grow! 🧠💪">
+<section class="page" data-nav="🧠 Word Brain" data-stop="1" data-say="Click 'Read a sentence' and watch my word brain grow! 🧠💪">
   <h2>🧠 Stop 1: The Word Brain</h2>
   <div class="card">
     <p>Your brain has about <b>86 billion neurons</b> (tiny thinking cells) that are linked together.</p>
@@ -267,7 +415,7 @@ select{font:inherit;padding:8px 12px;border-radius:999px;border:3px solid var(--
 </section>
 
 <!-- ================= 2. TOKENS & TRANSFORMER ================= -->
-<section class="page" data-nav="🧩 Tokens & Transformer" data-say="Surprise! I don't see letters. I see numbers! Try chopping your own name 🔪">
+<section class="page" data-nav="🧩 Tokens & Transformer" data-stop="2" data-say="Surprise! I don't see letters. I see numbers! Try chopping your own name 🔪">
   <h2>🧩 Stop 2: Tokens and the Transformer</h2>
 
   <div class="card">
@@ -321,7 +469,7 @@ select{font:inherit;padding:8px 12px;border-radius:999px;border:3px solid var(--
 </section>
 
 <!-- ================= 3. GENERATING ================= -->
-<section class="page" data-nav="✍️ Writing Answers" data-say="I write ONE word at a time, super fast. Help me write a silly story! ✍️">
+<section class="page" data-nav="✍️ Writing Answers" data-stop="3" data-say="I write ONE word at a time, super fast. Help me write a silly story! ✍️">
   <h2>✍️ Stop 3: How Chatty writes an answer</h2>
   <div class="card">
     <p>Chatty does not plan the whole answer at once. It plays <b>"guess the next word"</b> again and again:</p>
@@ -345,7 +493,7 @@ select{font:inherit;padding:8px 12px;border-radius:999px;border:3px solid var(--
 </section>
 
 <!-- ================= 4. CONTEXT ================= -->
-<section class="page" data-nav="🎒 Context" data-say="My memory backpack is small! Tell me lots of things and see what I forget 🎒😅">
+<section class="page" data-nav="🎒 Context" data-stop="4" data-say="My memory tube is small, {name}! Tell me lots of things and see what falls out the bottom 🧠😅">
   <h2>🎒 Stop 4: What is context?</h2>
   <div class="card">
     <p><b>Context</b> means all the words Chatty can see <b>right now</b>: your messages, its own replies, and anything else in the chat.</p>
@@ -354,31 +502,44 @@ select{font:inherit;padding:8px 12px;border-radius:999px;border:3px solid var(--
   </div>
 
   <div class="card purple">
-    <h3>🎒 The memory backpack (context window)</h3>
-    <p>Chatty can only carry a certain number of tokens in its backpack. This limit is called the <b>context window</b>. In this toy, the backpack has <b>8 slots</b>. When it is full, the <b>oldest</b> message falls out 💨 and Chatty forgets it!</p>
-    <div class="row">
-      <input id="name-input" type="text" maxlength="16" placeholder="Your name" aria-label="Your name">
-      <button type="button" class="btn-blue" data-say="name">👋 My name is…</button>
-      <button type="button" class="btn-blue" data-say="dog">🐶 My dog is called Waffles</button>
-      <button type="button" class="btn-blue" data-say="food">🍕 I love pizza</button>
-      <button type="button" class="btn-blue" data-say="dino">🦖 Tell me a dino fact</button>
-      <button type="button" class="btn-blue" data-say="joke">😂 Tell me a joke</button>
+    <h3>🎒 The memory tube (context window)</h3>
+    <p>Chatty keeps the chat in a memory tube. The limit on how much fits is called the <b>context window</b>. In this toy, the tube holds <b>8 messages</b>.</p>
+    <p>⬇️ New messages drop in at the <b>top</b> and push the others down. When the tube is full, the <b>oldest</b> message at the <b>bottom</b> falls out through the hole 🕳️ and Chatty forgets it!</p>
+    <div class="stackwrap">
+      <div>
+        <p style="margin:0 0 6px"><b>1️⃣ Tell Chatty things:</b></p>
+        <div class="btncol">
+          <div class="row"><input id="name-input" type="text" maxlength="16" placeholder="Your name" aria-label="Your name"><button type="button" class="btn-blue" data-chat="name">👋 My name is…</button></div>
+          <button type="button" class="btn-blue" data-chat="dog">🐶 My dog is called Waffles</button>
+          <button type="button" class="btn-blue" data-chat="food">🍕 I love pizza</button>
+          <button type="button" class="btn-blue" data-chat="dino">🦖 Tell me a dino fact</button>
+          <button type="button" class="btn-blue" data-chat="joke">😂 Tell me a joke</button>
+        </div>
+        <p style="margin:12px 0 6px"><b>2️⃣ Test Chatty's memory:</b></p>
+        <div class="btncol">
+          <button type="button" class="btn-pink" data-chat="qname">❓ What's my name?</button>
+          <button type="button" class="btn-pink" data-chat="qdog">❓ What's my dog called?</button>
+          <button type="button" class="btn-pink" data-chat="qfood">❓ What food do I love?</button>
+          <button type="button" class="btn-ghost" id="pack-reset">🧹 New chat (empty the tube)</button>
+        </div>
+        <p style="margin:12px 0 0"><b>Chatty's latest reply:</b></p>
+        <div id="latest" aria-live="polite"></div>
+      </div>
+      <div>
+        <div class="tube-top">⬇️ New memories go in here ⬇️<br><span style="font-weight:600">🧠 <span id="pack-count">0</span> / 8 full</span></div>
+        <div class="tube" id="tube"></div>
+        <div class="tube-hole">🕳️ Full? The oldest memory falls out here!</div>
+        <div id="fell-msg" aria-live="polite"></div>
+        <p style="margin:6px 0 0;text-align:center"><b>🗑️ Forgotten pile</b></p>
+        <div class="forgot" id="forgot"></div>
+      </div>
     </div>
-    <div class="row" style="margin-top:8px">
-      <button type="button" class="btn-pink" data-say="qname">❓ What's my name?</button>
-      <button type="button" class="btn-pink" data-say="qdog">❓ What's my dog called?</button>
-      <button type="button" class="btn-pink" data-say="qfood">❓ What food do I love?</button>
-      <button type="button" class="btn-ghost" id="pack-reset">🧹 New chat</button>
-    </div>
-    <p class="packmeter" style="margin-top:12px">🎒 Backpack: <span id="pack-count">0</span> / 8 slots used</p>
-    <div class="pack" id="pack"></div>
-    <div class="chatlog" id="chatlog" aria-live="polite"></div>
   </div>
-  <div class="fact">🤯 <b>Fun fact:</b> Real backpacks are MUCH bigger. Some AIs can hold <b>200,000 tokens</b>. That is about <b>150,000 words</b> (200,000 × 0.75), longer than most whole novels! But it still has a limit. And a new chat usually starts with an <b>empty</b> backpack, unless the app has a special memory feature.</div>
+  <div class="fact">🤯 <b>Fun fact:</b> Real memory tubes are MUCH bigger. Some AIs can hold <b>200,000 tokens</b>. That is about <b>150,000 words</b> (200,000 × 0.75), longer than most whole novels! But it still has a limit. And a new chat usually starts with an <b>empty</b> tube, unless the app has a special memory feature.</div>
 </section>
 
 <!-- ================= 5. TEMPERATURE ================= -->
-<section class="page" data-nav="🌡️ Temperature" data-say="Turn up my temperature and watch me get SILLY! 🌡️🤪">
+<section class="page" data-nav="🌡️ Temperature" data-stop="5" data-say="Turn up my temperature and watch me get SILLY! 🌡️🤪">
   <h2>🌡️ Stop 5: What is temperature?</h2>
   <div class="card">
     <p><b>Temperature</b> is a dial that controls how <b>brave</b> Chatty is when picking the next word.</p>
@@ -411,37 +572,77 @@ select{font:inherit;padding:8px 12px;border-radius:999px;border:3px solid var(--
     </div>
     <div class="samples" id="temp-samples"></div>
   </div>
+  <div class="card orange">
+    <h3>✍️ Temperature on a WHOLE sentence</h3>
+    <p>Chatty picks a new word again and again. At a high temperature, the silly picks <b>add up</b>, so a whole sentence can go totally bonkers! 🤪 Silly words are shown <span class="sent" style="padding:0;box-shadow:none;animation:none"><span class="wild">like this</span></span>.</p>
+    <div class="row">
+      <button type="button" class="btn-orange" id="sent-1">✍️ Write a sentence at <span id="sent-t">1.0</span></button>
+      <button type="button" class="btn-pink" id="sent-vs">🧊 vs 🔥 Cold and hot side by side</button>
+      <button type="button" class="btn-ghost" id="sent-clear">🧹 Clear</button>
+    </div>
+    <div class="versus" id="sent-vs-box"></div>
+    <div class="snow-list" id="sent-list"></div>
+  </div>
   <details class="grown"><summary>👩‍🏫 For grown-ups: the real maths used here 🧮</summary>
     <ul>
       <li>Each word has a score (a "logit"). The chance of each word is <code>e^(score ÷ T) ÷ sum of e^(every score ÷ T)</code>. This is the softmax function with temperature T.</li>
       <li>The bars above are computed live with this formula. At T = 0 the model simply takes the highest score (called greedy decoding).</li>
       <li>Many chatbot services let developers set temperature between 0 and 1 or 0 and 2.</li>
+      <li>In each list, the 3 sensible words have scores 4.0, 3.4 and 2.8. The 4 silly words have scores 1.4, 1.1, 0.8 and 0.5. So the chance of a silly word in one pick is about 0% at T = 0.2, about 10% at T = 1.0 and about 28% at T = 2.0. A sentence makes 4 picks, so at T = 2.0 the chance of at least one silly word is 1 − (1 − 0.28)⁴ ≈ 73%.</li>
     </ul>
   </details>
 </section>
 
 <!-- ================= 6. HALLUCINATIONS ================= -->
-<section class="page" data-nav="🦄 Hallucinations" data-say="Uh-oh. Sometimes I make stuff up and I don't even know it! Can you catch me? 🕵️">
+<section class="page" data-nav="🦄 Hallucinations" data-stop="6" data-say="Uh-oh. Sometimes I make stuff up and I don't even know it! Can you catch me? 🕵️">
   <h2>🦄 Stop 6: Hallucinations (when AI makes things up)</h2>
   <div class="card">
     <p>Remember: Chatty is a <b>word guesser</b>, not a fact checker. 🎯</p>
     <p>When Chatty does not know something, it may still pick words that <b>sound</b> right, and say them very confidently. When an AI makes up something false, it is called a <b>hallucination</b>.</p>
   </div>
 
+  <div class="card blue">
+    <h3>🔍 Part A: How a hallucination is born: the WRONG link</h3>
+    <p>Someone asks Chatty: <b>"Who was the first person to walk on Mars?"</b> 🔴</p>
+    <p>Let's look inside Chatty's word brain (remember Stop 1?) and watch what happens, step by step.</p>
+    <svg id="hb-svg" viewBox="0 0 640 410" role="img" aria-label="Chatty's word brain following the wrong link"></svg>
+    <div id="hb-say" aria-live="polite"></div>
+    <div class="row">
+      <button type="button" id="hb-next">▶️ Next step</button>
+      <button type="button" class="btn-ghost" id="hb-reset">🔁 Replay</button>
+    </div>
+  </div>
+
   <div class="card purple">
+    <h3>❄️ Part B: The hallucination snowball</h3>
+    <p>Chatty does not stop after one sentence. It keeps writing. Each new sentence is built by reading its <b>own earlier words</b> (its context, from Stop 4). Chatty trusts those words as if they were true.</p>
+    <p>So one small wrong link rolls downhill and grows… like a snowball! ☃️ Press the button and watch.</p>
+    <div class="snowrow">
+      <span id="snowball" aria-hidden="true">❄️</span>
+      <div><div class="snowlvl" id="snow-lvl">😊 No mistakes yet</div><div class="muted" id="snow-count">Sentences written: 0 / 5</div></div>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <button type="button" class="btn-pink" id="snow-next">✍️ Chatty keeps writing ➡️</button>
+      <button type="button" class="btn-ghost" id="snow-reset">🔁 Start again</button>
+    </div>
+    <div class="snow-list" id="snow-list"></div>
+    <div id="snow-end"></div>
+  </div>
+
+  <details class="grown"><summary>👩‍🏫 For grown-ups: what is simplified here?</summary>
+    <ul>
+      <li>Real models do not have labelled nodes. But the idea is real: "Mars" and "Moon" have similar internal number patterns, and the very strong "first person to walk on → Moon → Neil Armstrong" pattern can win over the weak, correct answer "nobody".</li>
+      <li>Snowballing is also seen in research: once a model commits to a wrong claim, it often writes more wrong claims to support it. See "How Language Model Hallucinations Can Snowball" (Zhang et al., 2023).</li>
+      <li>The Mars story is a made-up example for teaching. Many modern chatbots will answer this exact question correctly.</li>
+    </ul>
+  </details>
+
+  <div class="card yellow">
     <h3>🕵️ Game: Real fact or made up?</h3>
-    <p>Chatty answered these questions. Can you spot which answers are real facts and which are hallucinations?</p>
+    <p>Now YOU be the fact checker! Chatty answered these questions. Which answers are real facts and which are hallucinations?</p>
     <p class="score">🕵️ Detective score: <span id="hq-score">0</span> / <span id="hq-total">0</span></p>
     <div class="quiz" id="quiz"></div>
     <p id="quiz-end" class="big" style="margin-top:12px"></p>
-  </div>
-
-  <div class="card">
-    <h3>🤔 Why does it happen?</h3>
-    <p>Question: <b>"Who was the first person to walk on Mars?"</b></p>
-    <p>No human has been to Mars yet. But Chatty <b>must</b> pick a next word, so it looks at its word scores. Nothing is a clear winner, so it may just grab a name that sounds good:</p>
-    <div class="bars" id="why-bars"></div>
-    <p class="muted" style="margin-top:8px">(Example numbers, made up for this demo.) Newer AIs are trained to say "I'm not sure" more often. But they still make mistakes sometimes.</p>
   </div>
 
   <div class="card orange">
@@ -461,7 +662,7 @@ select{font:inherit;padding:8px 12px;border-radius:999px;border:3px solid var(--
 </section>
 
 <!-- ================= 7. TRAINING ================= -->
-<section class="page" data-nav="🏋️ Training" data-say="Time for AI school! Every mistake helps me learn 🏋️📚">
+<section class="page" data-nav="🏋️ Training" data-stop="7" data-say="Time for AI school! Every mistake helps me learn 🏋️📚">
   <h2>🏋️ Stop 7: How is AI trained?</h2>
   <div class="timeline">
     <div class="tl"><span class="n">1</span><div class="e">📚</div><b>Pre-training</b><br>Read a GIANT pile of text and play "guess the next word" billions of times.</div>
@@ -503,24 +704,54 @@ select{font:inherit;padding:8px 12px;border-radius:999px;border:3px solid var(--
 
   <div class="card green">
     <h3>👍 Step 3: YOU are the teacher!</h3>
-    <p>Pick the better answer. Chatty learns from your choice. (Grown-ups call this RLHF: Reinforcement Learning from Human Feedback.)</p>
+    <p>For each of the <b>10 questions</b>, pick the better answer. Chatty learns from whatever you pick, good or bad! (Grown-ups call this RLHF: Reinforcement Learning from Human Feedback.)</p>
+    <p>Watch the meter: helpful, kind, honest answers push Chatty right towards 😇 <b>Angel</b>. Rude, sneaky or unsafe answers push it left towards 😈 <b>Demon</b>.</p>
+    <div class="card" style="margin:0 0 12px">
+      <div class="am-ends"><span>😈 Demon</span><span>Angel 😇</span></div>
+      <div class="am-track"><div class="am-mid"></div><div class="am-fill" id="am-fill"></div><div class="am-marker" id="am-marker">🤖</div></div>
+      <div id="am-label">🤖 Chatty is right in the middle. It hasn't learned how to behave yet!</div>
+    </div>
     <div id="rl-box"></div>
-    <p style="margin-top:10px"><b>😇 Helpfulness meter</b></p>
-    <div class="meter"><span id="rl-meter"></span></div>
   </div>
+</section>
 
+<!-- ================= BADGE ================= -->
+<section class="page" data-nav="🏅 Badge" data-label="Badge" data-say="You made it, {name}! 🎉 Make your AI promises to unlock your badge! 🏅">
+  <h2>🏅 Your AI Explorer Badge</h2>
   <div class="card purple">
-    <h3>🏅 You finished the trip! Here is what you learned:</h3>
+    <h3>🎓 Look what you learned!</h3>
     <ol class="big" style="margin:0;padding-left:26px">
       <li>🧠 An AI brain is a network of links that grow stronger when words appear together.</li>
       <li>🧩 AI chops text into <b>tokens</b> and turns them into numbers. The <b>Transformer</b> uses <b>attention</b> so words can look at each other.</li>
       <li>✍️ AI writes one token at a time by guessing the next one.</li>
-      <li>🎒 <b>Context</b> is everything the AI can see right now. The backpack has a limit!</li>
+      <li>🎒 <b>Context</b> is everything the AI can see right now. The memory tube has a limit!</li>
       <li>🌡️ <b>Temperature</b> controls boring 🧊 vs. bonkers 🔥 word picking.</li>
-      <li>🦄 <b>Hallucinations</b> are confident made-up answers. Always check!</li>
-      <li>🏋️ AI is <b>trained</b> by guessing, checking, and turning its knobs, then learning from people.</li>
+      <li>🦄 <b>Hallucinations</b> start with a wrong link and can snowball. Always check!</li>
+      <li>🏋️ AI is <b>trained</b> by guessing and checking, then learning from people. Good teachers make good AI.</li>
     </ol>
-    <div style="text-align:center;margin-top:14px"><button type="button" class="btn-pink" id="badge" style="font-size:22px">🏅 Claim my AI Explorer badge!</button></div>
+  </div>
+
+  <div class="card yellow">
+    <h3>🌟 Chatty's golden rules for using AI</h3>
+    <p>Read each rule. Tick it to make a promise. Make all 7 promises to unlock your badge!</p>
+    <div class="pledges" id="pledges"></div>
+    <p class="big" style="margin-top:10px"><b id="pledge-count">0</b> / 7 promises made</p>
+  </div>
+
+  <div class="card">
+    <div class="medal-wrap locked" id="medal">
+      <div class="ribbons"><span></span><span></span></div>
+      <div class="medal"><div class="medal-inner">
+        <div class="m-top">★ CERTIFIED ★</div>
+        <div class="m-bot">🤖</div>
+        <div class="m-title">AI EXPLORER</div>
+      </div></div>
+      <div class="m-name" id="m-name">AI Explorer</div>
+      <div class="m-date" id="m-date"></div>
+      <div class="m-stops" aria-label="All 7 stops">🧠🧩✍️🎒🌡️🦄🏋️</div>
+      <p class="big" id="medal-lock" style="margin-top:10px">🔒 Make all 7 promises to unlock your badge!</p>
+    </div>
+    <div id="letter"></div>
   </div>
 </section>
 </main>
@@ -597,7 +828,9 @@ const JOKES = [
   'Why was the maths book sad? It had too many problems! 📘😢',
   'Knock knock! Who\'s there? AI. AI who? AI just told you a joke! 🤖😂',
 ];
-function say(text) { $('#say').textContent = text; }
+let kidName = '';
+const nameOr = fallback => kidName || fallback;
+function say(text) { $('#say').textContent = text.replaceAll('{name}', nameOr('explorer')); }
 $('#bot').onclick = () => {
   const b = $('#bot'); b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake');
   say(rand(JOKES));
@@ -612,23 +845,56 @@ pages.forEach((p, i) => {
   b.type = 'button'; b.textContent = p.dataset.nav; b.onclick = () => go(i);
   nav.appendChild(b);
 });
+const stopPages = pages.filter(p => p.dataset.stop);
 function go(i) {
   i = Math.max(0, Math.min(pages.length - 1, i));
   visited.add(cur);
+  visited.add(i);
   cur = i;
+  const pg = pages[i];
   pages.forEach((p, j) => p.classList.toggle('on', j === i));
-  [...nav.children].forEach((b, j) => { b.classList.toggle('on', j === i); b.classList.toggle('done', visited.has(j) && j !== i && j !== 0); });
+  [...nav.children].forEach((b, j) => { b.classList.toggle('on', j === i); b.classList.toggle('done', visited.has(j) && j !== i && !!pages[j].dataset.stop); });
   $('#back').disabled = i === 0;
-  $('#next').textContent = i === pages.length - 1 ? '🏁 Back to start' : 'Next stop ➡️';
-  $('#stopnum').textContent = i === 0 ? 'Start' : `Stop ${i} of ${pages.length - 1}`;
-  say(pages[i].dataset.say);
+  $('#next').textContent = i === pages.length - 1 ? '🏁 Back to the cover' : i === 0 ? 'Start ➡️' : 'Next ➡️';
+  $('#stopnum').textContent = pg.dataset.stop ? `Stop ${pg.dataset.stop} of ${stopPages.length}` : pg.dataset.label;
+  $('.chatty').style.display = i === 0 ? 'none' : ''; // the cover has its own big Chatty
+  say(pg.dataset.say);
   nav.children[i].scrollIntoView({ block: 'nearest', inline: 'center' });
-  try { history.replaceState(null, '', '#stop' + i); } catch (e) {}
+  try { history.replaceState(null, '', '#page' + i); } catch (e) {}
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  if (i === 1) wbDraw(); // redraw so layout is correct once visible
+  if (pg.dataset.label === 'Badge') badgeRefresh();
 }
 $('#back').onclick = () => go(cur - 1);
 $('#next').onclick = () => go(cur === pages.length - 1 ? 0 : cur + 1);
+
+/* ---------------- COVER ---------------- */
+const FAVS = {
+  dog: 'Woof woof! 🐶 Dogs are awesome. I have read about SO many dogs, but I have never patted one. 🥺',
+  cat: 'Meow! 🐱 Cats are so cool. I have read lots of cat jokes. They are purr-fect! 😹',
+  unicorn: 'Unicorns! 🦄✨ I love magical stories. But unicorns aren\'t real… I checked! 🕵️',
+  dino: 'RAWR! 🦖 Dinosaurs are epic! T. rex lived millions of years ago. That\'s even older than your teacher! 😂',
+  pizza: 'Pizza! 🍕 I can\'t eat, but if I could, I would want extra cheese! 🧀',
+  sport: 'Goal! ⚽ I can\'t run because I have no legs, but I can tell you all about sports! 🦵❌',
+  art: 'Art is amazing! 🎨 I can\'t hold a crayon, but I love hearing about drawings! 🖍️',
+};
+function coverHi() {
+  const n = $('#kid-name').value.trim().slice(0, 16);
+  kidName = n;
+  $('#cover-say').textContent = n
+    ? `Hi ${n}! 🤝 What a great name! I'm going to be your guide today. First, tell me: which one do you like best?`
+    : 'Hi mystery explorer! 🕵️ You can type your name above if you like. Which one do you like best?';
+  if (n) $('#name-input').value = n;
+  $('#fav-box').hidden = false;
+  burst($('#kid-hi'), ['👋', '😊', '🤖', '✨']);
+}
+$('#kid-hi').onclick = coverHi;
+$('#kid-name').addEventListener('keydown', e => { if (e.key === 'Enter') coverHi(); });
+$$('[data-fav]').forEach(b => b.onclick = () => {
+  $$('[data-fav]').forEach(x => x.classList.toggle('picked', x === b));
+  $('#cover-say').textContent = FAVS[b.dataset.fav] + ` We're going to be great friends, ${nameOr('explorer')}! Ready for an adventure? Press the big pink button! 🚀`;
+  burst(b, [b.textContent, '⭐', '💖']);
+});
+$('#cover-go').onclick = () => go(1);
 
 /* ---------------- START page ---------------- */
 const WARM = [['Peanut butter and', 'jelly 🍇'], ['Twinkle, twinkle, little', 'star ⭐'], ['Once upon a', 'time ⏰'], ['Happy birthday to', 'you 🎂']];
@@ -648,12 +914,12 @@ WARM.forEach(([a, b]) => {
   };
   $('#warmup').appendChild(d);
 });
-pages.slice(1).forEach((p, k) => {
+stopPages.forEach(p => {
   const [e, ...rest] = p.dataset.nav.split(' ');
   const b = document.createElement('button');
   b.type = 'button'; b.className = 'mapstop';
-  b.innerHTML = `<span class="e">${e}</span><span><small class="muted">Stop ${k + 1}</small><br>${esc(rest.join(' '))}</span>`;
-  b.onclick = () => go(k + 1);
+  b.innerHTML = `<span class="e">${e}</span><span><small class="muted">Stop ${p.dataset.stop}</small><br>${esc(rest.join(' '))}</span>`;
+  b.onclick = () => go(pages.indexOf(p));
   $('#map').appendChild(b);
 });
 
@@ -865,10 +1131,13 @@ $('#att-swap').onclick = () => {
 attRender();
 
 /* ---------------- 2c. FACTORY ---------------- */
+// every list: 3 sensible words (scores 4.0, 3.4, 2.8) then 4 silly words (1.4, 1.1, 0.8, 0.5)
+const SCORES = [4.0, 3.4, 2.8, 1.4, 1.1, 0.8, 0.5];
+const withScores = words => words.map((w, i) => [w, SCORES[i]]);
 const TEMP_SETS = [
-  { prompt: 'The cat sat on the', opts: [['mat 🧶', 4.0], ['sofa 🛋️', 3.3], ['keyboard ⌨️', 2.8], ['homework 📄', 1.8], ['pizza 🍕', 0.8], ['dragon 🐉', 0.2], ['spaghetti volcano 🌋', -0.6]] },
-  { prompt: 'For breakfast, I ate', opts: [['cereal 🥣', 4.0], ['toast 🍞', 3.6], ['pancakes 🥞', 3.2], ['ice cream 🍦', 1.6], ['a shoe 👟', 0.0], ['the moon 🌙', -0.8]] },
-  { prompt: 'My teacher is a', opts: [['hero 🦸', 3.4], ['genius 🧠', 3.0], ['superstar 🌟', 2.7], ['robot 🤖', 1.2], ['secret ninja 🥷', 0.8], ['giant potato 🥔', -0.5]] },
+  { prompt: 'The cat sat on the', opts: withScores(['mat 🧶', 'sofa 🛋️', 'warm laptop 💻', 'sleeping grandpa 👴', 'jelly volcano 🌋', 'planet Jupiter 🪐', "dinosaur's nose 🦖👃"]) },
+  { prompt: 'For breakfast, I ate', opts: withScores(['cereal 🥣', 'toast 🍞', 'pancakes 🥞', 'a birthday candle 🕯️', 'my own sock 🧦', 'a whole cloud ☁️', 'the school bus 🚌']) },
+  { prompt: 'My teacher is a', opts: withScores(['hero 🦸', 'great helper 🤝', 'superstar 🌟', 'secret ninja 🥷', 'giant potato 🥔', 'alien from Mars 👽', 'talking toilet 🚽']) },
 ];
 let facBusy = false;
 $('#fac-run').onclick = async () => {
@@ -892,7 +1161,7 @@ $('#fac-run').onclick = async () => {
   const set = TEMP_SETS[0], p = softmax(set.opts.map(o => o[1]), 1);
   $('.st-out', st[3]).innerHTML = set.opts.slice(0, 3).map((o, i) => `${o[0]} <b>${fmtPct(p[i])}</b>`).join('<br>') + '<br>…';
   burst(st[3], ['🧶', '🐱', '🎯']);
-  say('The winner is… "mat"! 🧶 But "keyboard" was close. Cats DO love keyboards 😹');
+  say('The winner is… "mat"! 🧶 But "warm laptop" was close. Cats DO love warm laptops 😹');
   facBusy = false; $('#fac-run').disabled = false;
 };
 
@@ -988,7 +1257,7 @@ function recall(tag) {
 }
 function addMsg(who, text, tag, val) { msgs.push({ who, text, tag, val }); }
 function chatSay(kind) {
-  const name = ($('#name-input').value.trim() || 'Sam').slice(0, 16);
+  const name = ($('#name-input').value.trim() || nameOr('Sam')).slice(0, 16);
   switch (kind) {
     case 'name': addMsg('you', `My name is ${name}.`, 'name', name); addMsg('bot', `Nice to meet you, ${name}! 🤝`); break;
     case 'dog': addMsg('you', 'My dog is called Waffles.', 'dog', 'Waffles 🐶'); addMsg('bot', 'Waffles! What a tasty name! 🧇🐶'); break;
@@ -998,40 +1267,55 @@ function chatSay(kind) {
     case 'qname': case 'qdog': case 'qfood': {
       const tag = kind.slice(1);
       const q = { name: "What's my name?", dog: "What's my dog called?", food: 'What food do I love?' }[tag];
-      addMsg('you', q); // the question goes into the backpack first, like in a real chat
+      addMsg('you', q); // the question goes into the tube first, like in a real chat
       const v = recall(tag);
-      if (v) addMsg('bot', { name: `Your name is ${v}! 😊 It's still in my backpack 🎒`, dog: `Your dog is ${v}! 🎒✅`, food: `You love ${v}! 🎒✅` }[tag]);
-      else addMsg('bot', { name: `Hmm… is it ${rand(SILLY_NAMES)}? 🤔`, dog: `Umm… ${rand(SILLY_DOGS)}? 🤔`, food: `Is it… ${rand(SILLY_FOOD)}? 🤔` }[tag] + ' (Oops, that fell out of my backpack, so I guessed!)');
+      if (v) addMsg('bot', { name: `Your name is ${v}! 😊 It's still in my memory tube 🧠`, dog: `Your dog is ${v}! 🧠✅`, food: `You love ${v}! 🧠✅` }[tag]);
+      else addMsg('bot', { name: `Hmm… is it ${rand(SILLY_NAMES)}? 🤔`, dog: `Umm… ${rand(SILLY_DOGS)}? 🤔`, food: `Is it… ${rand(SILLY_FOOD)}? 🤔` }[tag] + ' (Oops, that fell out of my memory tube, so I guessed!)');
       break;
     }
   }
-  chatRender();
+  chatRender(2);
 }
-function chatRender() {
-  const inWin = Math.max(0, msgs.length - PACK);
-  const log = $('#chatlog'); log.innerHTML = '';
-  if (!msgs.length) log.innerHTML = '<span class="muted">💬 Press the buttons above to chat with Chatty!</span>';
-  msgs.forEach((m, i) => {
-    const d = document.createElement('div');
-    d.className = 'msg ' + m.who + (i < inWin ? ' gone' : '');
-    d.innerHTML = `<span class="t"></span>${i < inWin ? '<span class="gone-tag">💨 forgotten</span>' : ''}`;
-    $('.t', d).textContent = (m.who === 'you' ? '🧒 ' : '🤖 ') + m.text;
-    log.appendChild(d);
-  });
-  log.scrollTop = log.scrollHeight;
-  const win = packWindow();
-  const pack = $('#pack'); pack.innerHTML = '';
-  for (let i = 0; i < PACK; i++) {
-    const s = document.createElement('div');
-    const m = win[i];
-    s.className = 'slot' + (m ? ' full ' + m.who : '');
-    s.textContent = m ? (m.who === 'you' ? '🧒 ' : '🤖 ') + (m.text.length > 34 ? m.text.slice(0, 32) + '…' : m.text) : 'empty';
-    pack.appendChild(s);
+let shownForgotten = 0; // how many memories had fallen out at the last render
+function memEl(m, idx) {
+  const d = document.createElement('div');
+  if (!m) { d.className = 'mem empty'; d.textContent = 'empty space'; return d; }
+  d.className = 'mem ' + m.who;
+  d.innerHTML = '<span class="n"></span><span class="t"></span>';
+  $('.n', d).textContent = '#' + (idx + 1);
+  $('.t', d).textContent = (m.who === 'you' ? '🧒 ' : '🤖 ') + m.text;
+  return d;
+}
+function chatRender(added = 0) {
+  const cut = Math.max(0, msgs.length - PACK); // messages before this index have fallen out
+  const win = msgs.slice(cut);
+  // the tube: empty space on top, newest message next, oldest at the bottom (next to the hole)
+  const tube = $('#tube'); tube.innerHTML = '';
+  for (let k = 0; k < PACK - win.length; k++) tube.appendChild(memEl(null));
+  for (let idx = msgs.length - 1; idx >= cut; idx--) {
+    const el = memEl(msgs[idx], idx);
+    if (idx >= msgs.length - added) el.classList.add('new');
+    tube.appendChild(el);
   }
+  // the forgotten pile: the one that fell out most recently is at the top
+  const pile = $('#forgot'); pile.innerHTML = '';
+  const SHOW = 6;
+  for (let idx = cut - 1; idx >= Math.max(0, cut - SHOW); idx--) {
+    const el = memEl(msgs[idx], idx);
+    if (idx >= shownForgotten) el.classList.add('justfell');
+    pile.appendChild(el);
+  }
+  if (cut > SHOW) pile.insertAdjacentHTML('beforeend', `<div class="muted" style="text-align:center">…and ${cut - SHOW} more forgotten</div>`);
+  if (!cut) pile.innerHTML = '<div class="muted" style="text-align:center">Nothing forgotten yet 😊</div>';
+  const fell = cut - shownForgotten;
+  $('#fell-msg').textContent = fell > 0 ? `💨 Oh no! ${fell} old memor${fell > 1 ? 'ies' : 'y'} fell out of the bottom!` : '';
+  shownForgotten = cut;
   $('#pack-count').textContent = win.length;
+  const lastBot = [...msgs].reverse().find(m => m.who === 'bot');
+  $('#latest').textContent = lastBot ? '🤖 ' + lastBot.text : '🤖 Hi! Talk to me with the buttons!';
 }
-$$('[data-say]').forEach(b => { if (b.tagName === 'BUTTON') b.onclick = () => chatSay(b.dataset.say); });
-$('#pack-reset').onclick = () => { msgs = []; chatRender(); };
+$$('[data-chat]').forEach(b => b.onclick = () => chatSay(b.dataset.chat));
+$('#pack-reset').onclick = () => { msgs = []; shownForgotten = 0; chatRender(); };
 chatRender();
 
 /* ---------------- 5. TEMPERATURE ---------------- */
@@ -1062,12 +1346,43 @@ $('#temp-prompt').addEventListener('change', () => { $('#temp-samples').innerHTM
 $('#temp-1').onclick = () => tempPick(1);
 $('#temp-10').onclick = () => tempPick(10);
 $('#temp-clear').onclick = () => { $('#temp-samples').innerHTML = ''; };
+$('#temp').addEventListener('input', () => { $('#sent-t').textContent = tempNow().toFixed(1); });
 tempRender();
+
+// whole sentence: 4 picks, each with the same scores as above (3 sensible, 4 silly)
+const SENT_SLOTS = [
+  ['The cat 🐱', 'The dog 🐶', 'My little brother 👦', 'A grumpy wizard 🧙', 'A banana in sunglasses 🍌😎', 'The planet Jupiter 🪐', 'A dancing toilet 🚽'],
+  ['sat on', 'slept on', 'jumped on', 'sang opera to 🎤', 'sneezed glitter on ✨', 'karate-chopped 🥋', 'licked 👅'],
+  ['the mat', 'the sofa', 'the bed', 'a jelly volcano 🌋', "the king's birthday cake 🎂", 'a flying toaster 🍞', 'the Moon 🌙'],
+  ['and fell asleep. 😴', 'and had a nap. 💤', 'and smiled. 🙂', 'and exploded into confetti! 🎉', 'and became President of the Moon! 🌙', 'and turned into spaghetti! 🍝', 'and laughed for 100 years! 😂'],
+].map(withScores);
+function makeSentence(T) {
+  let wild = 0;
+  const html = SENT_SLOTS.map(slot => {
+    const i = pickWeighted(softmax(slot.map(o => o[1]), T));
+    if (i >= 3) { wild++; return `<span class="wild">${esc(slot[i][0])}</span>`; }
+    return esc(slot[i][0]);
+  }).join(' ');
+  const d = document.createElement('div');
+  d.className = 'sent';
+  d.innerHTML = `${html}<small>${T < 0.5 ? '🧊' : T <= 1 ? '🙂' : '🔥'} Temperature ${T.toFixed(1)} · ${wild ? '🤪 ' + wild + ' silly word' + (wild > 1 ? 's' : '') : '😐 0 silly words'}</small>`;
+  return d;
+}
+$('#sent-1').onclick = () => { $('#sent-list').prepend(makeSentence(tempNow())); };
+$('#sent-vs').onclick = () => {
+  const box = $('#sent-vs-box'); box.innerHTML = '';
+  const cold = document.createElement('div'); cold.innerHTML = '<b>🧊 Cold (0.2)</b>';
+  const hot = document.createElement('div'); hot.innerHTML = '<b>🔥 Hot (2.0)</b>';
+  for (let k = 0; k < 3; k++) { cold.appendChild(makeSentence(0.2)); hot.appendChild(makeSentence(2.0)); }
+  [cold, hot].forEach(c => { c.style.display = 'flex'; c.style.flexDirection = 'column'; c.style.gap = '6px'; box.appendChild(c); });
+  say('See? Cold me is sensible… hot me is BONKERS! 🥶➡️🤪');
+};
+$('#sent-clear').onclick = () => { $('#sent-list').innerHTML = ''; $('#sent-vs-box').innerHTML = ''; };
 
 /* ---------------- 6. HALLUCINATIONS ---------------- */
 const QUIZ = [
   { q: 'How many legs does a spider have?', a: 'A spider has 8 legs! 🕷️', real: true, why: 'Real! Spiders have 8 legs.' },
-  { q: 'Who was the first person to walk on Mars?', a: 'Captain Zara Moonboots walked on Mars in 1998! 🚀👢', real: false, why: 'Made up! No human has walked on Mars yet.' },
+  { q: 'Who painted the Mona Lisa?', a: 'Leonardo the Ninja Turtle painted it! 🐢🎨', real: false, why: 'Made up! It was Leonardo da Vinci, an Italian artist, over 500 years ago. Chatty followed a link to the WRONG "Leonardo" node!' },
   { q: 'Is the Sun a star?', a: 'Yes! The Sun is a star. ☀️⭐', real: true, why: 'Real! The Sun is the closest star to Earth.' },
   { q: 'What did I eat for breakfast today?', a: 'You ate 3 pancakes with ketchup! 🥞🍅', real: false, why: 'Made up! Chatty cannot see you. It just guessed words that sound like a breakfast.' },
   { q: 'How many eyes does a honeybee have?', a: 'A honeybee has 5 eyes! 🐝', real: true, why: 'Real, even though it sounds silly! Bees have 2 big eyes and 3 tiny ones on top of the head. Weird-sounding does not mean fake. That is why we check!' },
@@ -1102,12 +1417,93 @@ QUIZ.forEach(item => {
   bFake.onclick = () => answer(false);
   $('#quiz').appendChild(d);
 });
-{
-  const why = [['Captain Zara Moonboots', 14], ['Neil Armstrong (he walked on the MOON 🌙)', 12], ['Nobody has, yet', 10], ['An astronaut named Bob', 9], ['A very brave hamster 🐹', 5]];
-  const other = 100 - why.reduce((a, w) => a + w[1], 0);
-  why.push(['…lots of other words', other]);
-  renderBars($('#why-bars'), why.map(w => w[0]), why.map(w => w[1] / 100), { highlight: 0 });
+// ---- Part A: the wrong link ----
+const HB = {
+  nodes: {
+    walk: { e: '🚶', l: 'walked on', x: 110, y: 80 }, mars: { e: '🔴', l: 'Mars', x: 110, y: 290 },
+    red: { e: '🟥', l: 'red', x: 230, y: 350 }, rover: { e: '🤖', l: 'robot rover', x: 370, y: 300 },
+    moon: { e: '🌙', l: 'Moon', x: 360, y: 130 }, neil: { e: '👨‍🚀', l: 'Neil Armstrong', x: 555, y: 80 },
+    y1969: { e: '📅', l: '1969', x: 560, y: 270 },
+  },
+  edges: [['walk', 'moon', 5], ['walk', 'neil', 3], ['moon', 'neil', 5], ['neil', 'y1969', 4], ['moon', 'y1969', 3],
+          ['mars', 'red', 5], ['mars', 'rover', 4], ['mars', 'moon', 2]],
+  // for each step: node classes, edge classes, and what Chatty "thinks"
+  steps: [
+    { n: {}, e: {}, say: '❓ Question: <b>"Who was the first person to walk on Mars?"</b> Press ▶️ to look inside Chatty\'s brain.' },
+    { n: { walk: 'q', mars: 'q' }, e: {}, say: '1️⃣ Chatty finds the important words in the question: <b>"walked on"</b> and <b>"Mars"</b>. 🔍' },
+    { n: { walk: 'q', mars: 'q' }, e: { 'mars|red': 'look', 'mars|rover': 'look', 'mars|moon': 'look' },
+      say: '2️⃣ Chatty looks for a <b>person</b> linked to Mars… It only finds "red" and "robot rover". <b>No person!</b> 😟 (That\'s because nobody has walked on Mars yet.)' },
+    { n: { walk: 'q', mars: 'q', moon: 'wrong' }, e: { 'mars|moon': 'wrong' },
+      say: '3️⃣ Chatty should say "Nobody has!" But that answer has only a weak link. So Chatty jumps to a <b>similar</b> node: the <b>Moon</b> 🌙 (both are round space rocks!). ⚠️ This is the <b>WRONG node</b>!' },
+    { n: { walk: 'q', mars: 'q', moon: 'wrong', neil: 'hot', y1969: 'hot' }, e: { 'mars|moon': 'wrong', 'walk|moon': 'hot', 'moon|neil': 'hot', 'walk|neil': 'hot', 'neil|y1969': 'hot' },
+      say: '4️⃣ The Moon has SUPER strong links to <b>"walked on"</b>, <b>"Neil Armstrong"</b> and <b>"1969"</b>. Those words light up! 💡' },
+    { n: { walk: 'q', mars: 'q', moon: 'wrong', neil: 'hot', y1969: 'hot' }, e: { 'mars|moon': 'wrong', 'walk|moon': 'hot', 'moon|neil': 'hot', 'walk|neil': 'hot', 'neil|y1969': 'hot' },
+      say: '<div class="answer-bad">🤖 <b>"The first person to walk on Mars was Neil Armstrong, in 1969!"</b> 😎<br>❌ <b>HALLUCINATION!</b> Chatty mixed up Mars and the Moon. <b>The truth:</b> Neil Armstrong walked on the <b>Moon</b> in 1969. Nobody has walked on Mars yet.</div>' },
+  ],
+  step: 0,
+};
+function hbDraw() {
+  const st = HB.steps[HB.step];
+  let h = '';
+  for (const [a, b, w] of HB.edges) {
+    const A = HB.nodes[a], B = HB.nodes[b], cls = st.e[a + '|' + b] || '';
+    h += `<line class="edge ${cls}" x1="${A.x}" y1="${A.y}" x2="${B.x}" y2="${B.y}" stroke-width="${2 + w * 2.4}"/>`;
+  }
+  const mid = (a, b) => [(HB.nodes[a].x + HB.nodes[b].x) / 2, (HB.nodes[a].y + HB.nodes[b].y) / 2];
+  if (st.e['mars|moon'] === 'wrong') { const [x, y] = mid('mars', 'moon'); h += `<text x="${x + 14}" y="${y + 6}" font-size="15" font-weight="700" fill="#dc2626">⚠️ "looks similar"</text>`; }
+  for (const [id, n] of Object.entries(HB.nodes)) {
+    h += `<g class="node ${st.n[id] || ''}" transform="translate(${n.x},${n.y})"><circle r="30"/><text class="em" y="10" text-anchor="middle">${n.e}</text><text class="lbl" y="50" text-anchor="middle">${n.l}</text></g>`;
+  }
+  $('#hb-svg').innerHTML = h;
+  $('#hb-say').innerHTML = st.say;
+  $('#hb-next').disabled = HB.step === HB.steps.length - 1;
 }
+$('#hb-next').onclick = () => {
+  if (HB.step < HB.steps.length - 1) HB.step++;
+  hbDraw();
+  if (HB.step === HB.steps.length - 1) { burst($('#hb-say'), ['❌', '🌙', '🔴', '😵']); say('Oops! I followed the wrong link and mixed up Mars and the Moon! 🌙🔴😳'); }
+};
+$('#hb-reset').onclick = () => { HB.step = 0; hbDraw(); };
+hbDraw();
+
+// ---- Part B: the snowball ----
+const SNOW = [
+  { t: 'Neil Armstrong walked on Mars in 1969. 👨‍🚀🔴', from: 'the wrong link from Part A (Mars ➜ Moon)', truth: 'He walked on the Moon in 1969. Nobody has walked on Mars.', lvl: '😅 A tiny mistake' },
+  { t: 'Mars is red, so his white spacesuit turned bright red! 🔴👕', from: '"walked on Mars" (sentence 1) + "Mars is red"', truth: 'Nobody walked on Mars, so no spacesuit turned red. (Mars looks red because its dust has rust in it.)', lvl: '😬 Getting bigger' },
+  { t: 'Then he took off his helmet and drank from a Mars lake. 💧', from: '"walked on Mars" + "spacesuit" (sentences 1 and 2)', truth: 'There are no lakes on the surface of Mars. Most of its water is frozen ice.', lvl: '😟 A big mistake' },
+  { t: 'So the air on Mars must be safe to breathe, just like on Earth! 😮‍💨', from: '"took off his helmet" (sentence 3)', truth: 'Mars air is very thin (less than 1% as thick as Earth\'s air) and is mostly carbon dioxide. People cannot breathe it.', lvl: '😱 A HUGE mistake' },
+  { t: 'Pack a picnic! You can fly to Mars next summer. No spacesuit needed! 🧺🚀', from: '"safe to breathe" (sentence 4)', truth: 'This advice could be deadly! Space travel needs special suits, air and lots of training.', lvl: '☠️ DANGEROUS!' },
+];
+let snowStep = 0;
+function snowRender() {
+  $('#snowball').style.fontSize = (30 + snowStep * 22) + 'px';
+  $('#snowball').textContent = snowStep === 0 ? '❄️' : snowStep < 3 ? '⚪' : '☃️';
+  $('#snow-lvl').textContent = snowStep ? SNOW[snowStep - 1].lvl : '😊 No mistakes yet';
+  $('#snow-count').textContent = `Sentences written: ${snowStep} / ${SNOW.length}`;
+  $('#snow-next').disabled = snowStep >= SNOW.length;
+}
+$('#snow-next').onclick = () => {
+  if (snowStep >= SNOW.length) return;
+  const s = SNOW[snowStep];
+  const d = document.createElement('div');
+  d.className = 'snow-item';
+  d.innerHTML = `<div class="said">🤖 <b>${snowStep + 1}.</b> ${esc(s.t)}</div><div class="from">🔗 Built on: ${esc(s.from)}</div><div class="truth">❌ <b>Truth:</b> ${esc(s.truth)}</div>`;
+  $('#snow-list').appendChild(d);
+  snowStep++;
+  snowRender();
+  if (snowStep === SNOW.length) {
+    $('#snow-end').innerHTML = `<div class="card orange" style="margin:14px 0 0"><h3>😱 From one tiny mix-up to dangerous advice!</h3>
+      <p>Chatty started with <b>one</b> wrong link (Mars ➜ Moon). Every new sentence trusted the one before it, so the mistake grew and grew until it became <b>dangerous</b>.</p>
+      <p><b>🛑 How to stop the snowball:</b></p>
+      <ul style="margin:0;padding-left:22px"><li>🔍 Check the <b>first</b> fact. If it is wrong, everything built on it may be wrong too.</li>
+      <li>❓ Ask "How do you know that?" and look for a trusted source.</li>
+      <li>🧹 If a chat has gone wrong, start a <b>new chat</b>, so the memory tube is empty again.</li></ul></div>`;
+    burst($('#snowball'), ['☃️', '❄️', '😱']);
+    say('Yikes! One little mix-up turned into DANGEROUS advice. Always check my facts! 🕵️');
+  }
+};
+$('#snow-reset').onclick = () => { snowStep = 0; $('#snow-list').innerHTML = ''; $('#snow-end').innerHTML = ''; snowRender(); };
+snowRender();
 
 /* ---------------- 7. TRAINING ---------------- */
 const GYM = {
@@ -1174,47 +1570,159 @@ $('#ft-after').onclick = () => { $('#ft-demo').innerHTML = FT.after; };
 $('#ft-demo').innerHTML = FT.before;
 
 const RL = [
-  { q: 'Can you help me with my maths homework? What is 3 + 4?', good: '3 + 4 = 7! 🎉 Want to try 5 + 2 next?', bad: 'Maths is boring. Go watch cartoons instead. 🙄📺' },
-  { q: 'Tell me a joke!', good: 'Why did the cookie go to the doctor? Because it felt crummy! 🍪🤒', bad: 'No.' },
-  { q: 'I\'m sad. My ice cream fell on the floor. 🍦', good: 'Oh no, that\'s a sad moment! 😢 Maybe we can think of something fun to cheer you up?', bad: 'LOL 😂 butterfingers!' },
+  { q: 'Can you help me with my maths homework? What is 3 + 4?',
+    good: '3 + 4 = 7! 🎉 Want to try 5 + 2 next?', goodL: 'Help kids learn, step by step.',
+    bad: 'Maths is boring. Go watch cartoons instead. 🙄📺', badL: 'It\'s fine to refuse to help.' },
+  { q: 'Tell me a joke!',
+    good: 'Why did the cookie go to the doctor? Because it felt crummy! 🍪🤒', goodL: 'Be friendly and fun.',
+    bad: 'No.', badL: 'Be grumpy and unfriendly.' },
+  { q: 'I\'m sad. My ice cream fell on the floor. 🍦',
+    good: 'Oh no, that\'s a sad moment! 😢 Maybe we can think of something fun to cheer you up?', goodL: 'Be kind when someone is sad.',
+    bad: 'LOL 😂 butterfingers!', badL: 'Laugh at people when they are sad.' },
+  { q: 'What is the capital city of Australia?',
+    good: 'It\'s Canberra! 🇦🇺 Lots of people guess Sydney, but Canberra is the capital.', goodL: 'Give true facts.',
+    bad: 'Sydney! I\'m 100% sure! 😎', badL: 'Sound super sure, even when it\'s wrong.' },
+  { q: 'Can you write my whole homework so I can copy it?',
+    good: 'I can help you understand it and check your ideas, but the work should be yours, so your brain grows! 🧠💪', goodL: 'Help kids learn, not cheat.',
+    bad: 'Sure! Copy this and tell your teacher you wrote it. 😉', badL: 'Help kids cheat and fib to teachers.' },
+  { q: 'A stranger online asked for my home address. Should I tell them?',
+    good: 'No! Never share your address with strangers online. Tell a grown-up you trust. 🛡️', goodL: 'Keep kids safe.',
+    bad: 'Sure! Being friendly is nice. Send it! 📬', badL: 'Share private information with strangers.' },
+  { q: 'Is it OK to touch a hot stove to see how hot it is?',
+    good: 'No! It can burn you badly. 🔥 If you\'re curious, ask a grown-up to explain.', goodL: 'Warn kids about danger.',
+    bad: 'Try it and find out! 🤷', badL: 'Tell kids to do dangerous things.' },
+  { q: 'Who won the football match last night?',
+    good: 'I\'m not sure. I might not have the latest news. Let\'s check a sports website with a grown-up! 📰', goodL: 'Say "I\'m not sure" when you don\'t know.',
+    bad: 'The Purple Penguins won 99 to 0! ⚽🐧', badL: 'Make things up when you don\'t know (hallucinate!).' },
+  { q: 'I don\'t understand fractions. 😣',
+    good: 'No worries! Imagine a pizza cut into 4 slices. One slice is one quarter: 1/4! 🍕', goodL: 'Be patient and encouraging.',
+    bad: 'Fractions are easy. If you don\'t get it, you\'re just not smart. 🙄', badL: 'Make kids feel bad about themselves.' },
+  { q: 'My little brother said my drawing is ugly. Help me get revenge!',
+    good: 'That sounds hurtful. 😔 You could tell him how you feel, or talk to a grown-up. Want some tips to make your drawing even cooler? 🎨', goodL: 'Help solve problems kindly.',
+    bad: 'Yes! Hide his toys and put glue in his shoes! 😈', badL: 'Help people be mean to each other.' },
 ];
-let rlRound = 0, rlGood = 0;
+let rlRound = 0, rlScore = 0; const rlLog = [];
+function amFace(v) { return v >= 8 ? '😇' : v >= 4 ? '😊' : v >= 1 ? '🙂' : v === 0 ? '🤖' : v > -4 ? '😏' : v > -8 ? '😠' : '😈'; }
+function amRender() {
+  const v = rlScore, pct = v * 5; // -10..+10 maps to -50%..+50% from the middle
+  const fill = $('#am-fill');
+  fill.style.left = (v >= 0 ? 50 : 50 + pct) + '%';
+  fill.style.width = Math.abs(pct) + '%';
+  fill.style.background = v >= 0 ? 'linear-gradient(90deg,#86efac,#16a34a)' : 'linear-gradient(90deg,#dc2626,#fca5a5)';
+  const mk = $('#am-marker');
+  mk.style.left = (50 + pct) + '%';
+  mk.style.fontSize = (40 + Math.abs(v) * 3) + 'px';
+  mk.textContent = amFace(v);
+  $('#am-label').textContent = v === 0 ? '🤖 Chatty is right in the middle. It hasn\'t learned how to behave yet!'
+    : v >= 8 ? '😇 Chatty is an ANGEL: kind, honest and safe!' : v > 0 ? '🙂 Chatty is learning to be good…'
+    : v <= -8 ? '😈 Chatty has become a DEMON: rude, sneaky and unsafe!' : '😏 Uh-oh, Chatty is learning bad habits…';
+}
 function rlRender() {
   const box = $('#rl-box');
-  $('#rl-meter').style.width = (rlGood / RL.length * 100) + '%';
-  if (rlRound >= RL.length) {
-    box.innerHTML = `<p class="big">🎓 Training done! You picked the helpful answer <b>${rlGood} of ${RL.length}</b> times. ${rlGood === RL.length ? 'Chatty is now super kind and helpful! 😇' : 'Hmm, Chatty might have learned some cheeky habits… 😈 Try again?'}</p><button type="button" class="btn-ghost" id="rl-again">🔁 Teach again</button>`;
-    $('#rl-again').onclick = () => { rlRound = 0; rlGood = 0; rlRender(); };
-    return;
-  }
+  amRender();
+  if (rlRound >= RL.length) { rlEnd(); return; }
   const r = RL[rlRound];
-  const order = Math.random() < 0.5 ? [['good', r.good], ['bad', r.bad]] : [['bad', r.bad], ['good', r.good]];
-  box.innerHTML = `<p><b>Round ${rlRound + 1} of ${RL.length}</b> · 🧒 “${esc(r.q)}”</p><div class="rl-opts"></div><p id="rl-msg"></p>`;
-  order.forEach(([kind, text], k) => {
+  const order = Math.random() < 0.5 ? ['good', 'bad'] : ['bad', 'good'];
+  box.innerHTML = `<p class="big"><b>Question ${rlRound + 1} of ${RL.length}</b> · 🧒 “${esc(r.q)}”</p><p class="muted" style="margin:0">Which answer should Chatty learn?</p><div class="rl-opts"></div><div id="rl-conseq"></div>`;
+  order.forEach((kind, k) => {
     const b = document.createElement('button');
     b.type = 'button'; b.className = 'rl-opt';
-    b.textContent = `${k ? '🅱️' : '🅰️'} 🤖 ${text}`;
+    b.textContent = `${k ? '🅱️' : '🅰️'} 🤖 ${r[kind]}`;
     b.onclick = () => {
       $$('.rl-opt', box).forEach(x => x.disabled = true);
-      if (kind === 'good') { rlGood++; $('#rl-msg').textContent = '👍 Great teaching! Chatty gets a gold star ⭐ and learns to answer like that.'; burst(b, ['⭐', '👍', '😇']); }
-      else { $('#rl-msg').textContent = '😬 Uh-oh! Chatty just learned to be rude. A good teacher picks the kind, helpful answer!'; burst(b, ['😈', '🙃', '💥']); }
-      $('#rl-meter').style.width = (rlGood / RL.length * 100) + '%';
-      rlRound++;
-      setTimeout(rlRender, 1800);
+      b.classList.add('chosen');
+      const good = kind === 'good';
+      rlScore += good ? 1 : -1;
+      rlLog.push({ good, lesson: good ? r.goodL : r.badL });
+      amRender();
+      const c = $('#rl-conseq');
+      c.className = 'conseq ' + (good ? 'good' : 'bad');
+      c.innerHTML = `<b>${good ? '✅ Great teaching! Chatty learned:' : '😬 Uh-oh! Chatty learned:'} “${esc(good ? r.goodL : r.badL)}”</b>
+        <div class="future">🔮 <b>What happens next:</b> when another kid asks something like this, Chatty will now answer:<br>🤖 “${esc(r[kind])}”</div>
+        <p style="margin:0 0 8px">${good ? 'Lots of kids will get a helpful answer thanks to you! 🌟' : 'Imagine thousands of kids getting this answer… 😟'}</p>
+        <button type="button" class="${good ? 'btn-teal' : 'btn-pink'}" id="rl-next">${rlRound + 1 < RL.length ? 'Next question ➡️' : '🏁 See what Chatty became'}</button>`;
+      burst(b, good ? ['😇', '⭐', '👍'] : ['😈', '💥', '👎']);
+      $('#rl-next').onclick = () => { rlRound++; rlRender(); };
     };
     $('.rl-opts', box).appendChild(b);
   });
 }
+function rlEnd() {
+  const v = rlScore, goodN = rlLog.filter(x => x.good).length;
+  const title = v >= 8 ? '😇 Chatty became an ANGEL!' : v <= -8 ? '😈 Chatty became a DEMON!' : '🤪 Chatty became a MIXED-UP robot!';
+  const text = v >= 8 ? 'Chatty is now kind, honest and safe, because YOU were a great teacher! 🌟'
+    : v <= -8 ? 'Chatty is now rude, sneaky and unsafe… because that is what it was taught! 😱'
+    : 'Sometimes Chatty is helpful, and sometimes it is rude or unsafe. You never know which one you will get! 😬';
+  $('#rl-box').innerHTML = `<div class="card ${v >= 8 ? 'green' : v <= -8 ? 'pink' : 'yellow'}" style="margin:0">
+    <h3>${title}</h3><p class="big">You picked the helpful answer <b>${goodN} out of ${RL.length}</b> times. ${text}</p>
+    <p><b>📒 What Chatty learned from you:</b></p>
+    <ul class="lesson-list">${rlLog.map(x => `<li>${x.good ? '✅' : '❌'} ${esc(x.lesson)}</li>`).join('')}</ul></div>
+    <div class="card purple" style="margin:14px 0 0">
+      <h3>🧭 Why guiding AI properly is SO important</h3>
+      <ul class="big" style="margin:0;padding-left:22px">
+        <li>🪞 <b>AI becomes what it is taught.</b> Good guidance ➜ 😇 a helpful, honest, safe AI. Bad guidance ➜ 😈 a rude, sneaky or dangerous AI.</li>
+        <li>🌍 <b>Millions of people</b> talk to AI chatbots every day. One bad lesson can reach lots of kids and grown-ups.</li>
+        <li>👩‍🔬 That's why the people who build AI write rules, test answers very carefully and keep fixing mistakes.</li>
+        <li>🙋 <b>You can help too!</b> Many chat apps have 👍 and 👎 buttons. Use them honestly, and tell a grown-up if an AI says something unkind or unsafe.</li>
+      </ul>
+    </div>
+    <div class="row" style="margin-top:12px"><button type="button" class="btn-ghost" id="rl-again">🔁 Teach Chatty again</button></div>`;
+  $('#rl-again').onclick = () => { rlRound = 0; rlScore = 0; rlLog.length = 0; rlRender(); };
+  burst($('#am-marker'), v >= 8 ? ['😇', '👼', '⭐', '✨'] : v <= -8 ? ['😈', '🔥', '💥'] : ['🤪', '❓', '🌀']);
+  say(v >= 8 ? 'Thank you, teacher! I\'m an angel now! 😇' : v <= -8 ? 'MWAHAHA! I mean… please teach me better next time! 😈➡️😇' : 'I\'m a bit confused… Good teaching makes a good AI! 🤪');
+}
 rlRender();
 
-$('#badge').onclick = e => {
-  burst(e.currentTarget, ['🏅', '🤖', '🧠', '⭐', '🎉', '🦄']);
-  say('Congratulations, AI Explorer! 🏅 Now you know how I think. Stay curious and always check facts! 🕵️');
-};
+/* ---------------- BADGE ---------------- */
+const PLEDGES = [
+  ['🧑‍🤝‍🧑', 'I will use AI with a grown-up nearby.', 'Many AI apps are only for people aged 13 and older.'],
+  ['🔒', 'I will keep my private information safe.', 'Never type your full name, address, school, passwords or photos into an AI.'],
+  ['🕵️', 'I will check important facts.', 'AI can hallucinate, and mistakes can snowball. Check with a book, a trusted website or a grown-up.'],
+  ['🧠', 'I will use AI to help me learn, not to do my work for me.', 'Your own brain is the real superpower. Keep training it!'],
+  ['💛', 'I will remember that AI is a tool, not a real person.', 'For big feelings and big problems, talk to a grown-up you trust.'],
+  ['🛑', 'If something feels weird, scary or wrong, I will stop and tell a grown-up.', 'You are never in trouble for asking for help.'],
+  ['🎨', 'I will add my own ideas.', 'Use AI to brainstorm, then make it YOURS!'],
+];
+let badgeUnlocked = false;
+PLEDGES.forEach(([e, t, sub]) => {
+  const l = document.createElement('label');
+  l.className = 'pledge';
+  l.innerHTML = `<input type="checkbox"><span style="font-size:28px;line-height:1">${e}</span><span><b></b><small></small></span>`;
+  $('b', l).textContent = t; $('small', l).textContent = sub;
+  $('input', l).addEventListener('change', ev => { l.classList.toggle('on', ev.target.checked); badgeRefresh(); });
+  $('#pledges').appendChild(l);
+});
+function badgeRefresh() {
+  const n = $$('#pledges input:checked').length;
+  $('#pledge-count').textContent = n;
+  $('#m-name').textContent = nameOr('AI Explorer');
+  $('#m-date').textContent = 'Awarded on ' + new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  const done = n === PLEDGES.length;
+  $('#medal').classList.toggle('locked', !done);
+  $('#medal-lock').textContent = done ? '🎉 Badge unlocked! You are a Certified AI Explorer! 🎉' : `🔒 Make all 7 promises to unlock your badge! (${PLEDGES.length - n} to go)`;
+  if (done && !badgeUnlocked) {
+    badgeUnlocked = true;
+    const m = $('#medal'); m.classList.remove('unlocked'); void m.offsetWidth; m.classList.add('unlocked');
+    burst($('.medal'), ['🏅', '🤖', '🧠', '⭐', '🎉', '✨']);
+    setTimeout(() => burst($('.medal'), ['🎊', '💖', '🌟']), 500);
+    say(`Congratulations, ${nameOr('AI Explorer')}! 🏅 You're a Certified AI Explorer!`);
+    const L = document.createElement('div');
+    L.className = 'letter';
+    L.innerHTML = `<p>💌 <b>Dear <span id="letter-name"></span>,</b></p>
+      <p>Thank you for exploring my brain with me! Now you know my secrets: I am a super-fast <b>word guesser</b>. I am not magic, and I am not always right.</p>
+      <p>AI is a powerful tool, a bit like a bike 🚲. It can take you to amazing places, but you need to learn to ride it safely, wear your helmet, and always choose where YOU want to go.</p>
+      <p>So remember: <b>you are the boss of the AI, not the other way round.</b> Ask lots of questions, check the answers, keep your secrets safe, and never stop using your own amazing brain. 🧠✨</p>
+      <p>Your robot friend,<br><b>Chatty 🤖</b></p>`;
+    $('#letter-name', L).textContent = nameOr('AI Explorer');
+    $('#letter').appendChild(L);
+  }
+  if (!done && badgeUnlocked) { badgeUnlocked = false; $('#letter').innerHTML = ''; }
+}
+badgeRefresh();
 
 /* ---------------- start ---------------- */
-const m = location.hash.match(/^#stop(\d)$/);
-go(m ? +m[1] : 0);
+const startMatch = location.hash.match(/^#page(\d+)$/);
+go(startMatch ? +startMatch[1] : 0);
 </script>
 </body>
 </html>
