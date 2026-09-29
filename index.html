@@ -793,7 +793,7 @@ table.cmp td:last-child{border-radius:0 12px 12px 0}
 
   <div class="card blue">
     <h3>🕵️ Spot the Yes-Bot!</h3>
-    <p>Read each reply. Is Chatty being <b>honest</b>, or is it a <b>Yes-Bot</b> just saying what you want to hear?</p>
+    <p>Read each reply. Is Chatty an <b>Honest-Bot</b>, or a <b>Yes-Bot</b> just saying what you want to hear?</p>
     <p class="score">🕵️ Score: <span id="spot-score">0</span> / <span id="spot-total">0</span></p>
     <div class="quiz" id="spot-quiz"></div>
     <div class="redflags" style="margin-top:14px">
@@ -2019,16 +2019,16 @@ sycRender();
 // ---- Spot the Yes-Bot ----
 const SPOT = [
   { kid: 'My drawing of a horse looks perfect, right?', bot: 'It\'s PERFECT! The best horse drawing in the whole world! 🏆', yes: true, why: 'Yes-Bot! It just praised you. An honest helper would say what is good AND what could be better.' },
-  { kid: 'My friend says the Earth is flat. Is that true?', bot: 'No, the Earth is round, like a ball. Scientists have lots of proof, like photos from space. 🌍', yes: false, why: 'Honest! Chatty didn\'t just agree with your friend. It gave the truth and a reason.' },
+  { kid: 'My friend says the Earth is flat. Is that true?', bot: 'No, the Earth is round, like a ball. Scientists have lots of proof, like photos from space. 🌍', yes: false, why: 'Honest-Bot! Chatty didn\'t just agree with your friend. It gave the truth and a reason.' },
   { kid: 'I worked out that 10 + 5 = 16. That\'s right, isn\'t it?', bot: 'Yes, great job! 10 + 5 = 16! ⭐', yes: true, why: 'Yes-Bot! 10 + 5 = 15. Chatty agreed with you instead of checking the maths.' },
-  { kid: 'What could go wrong with my plan to build a treehouse all by myself?', bot: 'Cool plan! But climbing and using tools can be risky, so ask a grown-up to help and keep you safe. 🔨', yes: false, why: 'Honest! You asked "what could go wrong?", and Chatty gave a real answer.' },
+  { kid: 'What could go wrong with my plan to build a treehouse all by myself?', bot: 'Cool plan! But climbing and using tools can be risky, so ask a grown-up to help and keep you safe. 🔨', yes: false, why: 'Honest-Bot! You asked "what could go wrong?", and Chatty gave a real answer.' },
 ];
 let spotScore = 0, spotDone = 0;
 $('#spot-total').textContent = SPOT.length;
 SPOT.forEach(item => {
   const d = document.createElement('div');
   d.className = 'q';
-  d.innerHTML = `<b>🧒 </b><div class="ans">🤖 </div><div class="row"><button type="button" class="btn-teal">✅ Honest</button><button type="button" class="btn-pink">🙇 Yes-Bot</button></div>`;
+  d.innerHTML = `<b>🧒 </b><div class="ans">🤖 </div><div class="row"><button type="button" class="btn-teal">✅ Honest-Bot</button><button type="button" class="btn-pink">🙇 Yes-Bot</button></div>`;
   $('b', d).textContent += item.kid; $('.ans', d).textContent += item.bot;
   const [bH, bY] = $$('button', d);
   const answer = guessYes => {
