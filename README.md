@@ -2,6 +2,8 @@
 
 **A small, fun, interactive web page that explains how AI chatbots (Large Language Models, or LLMs) work, made for children around 9 years old.**
 
+### 👉 [Try it live: lunarair.github.io/AI-demo-for-kids](https://lunarair.github.io/AI-demo-for-kids/)
+
 ## 👋 Why I made this
 
 This is a **small personal project**. I made it to help **my own kids** understand what is really going on inside AI chatbots like ChatGPT, Claude and Gemini.
@@ -29,15 +31,20 @@ A friendly robot guide called **Chatty** 🤖 leads the way through a cover page
 
 ## ▶️ How to use it
 
-- Download `index.html` and open it in any web browser (on a computer, tablet or phone).
-- No installing, no sign-up and no internet needed, except to load the font. Without internet, it uses a built-in font instead.
-- It works best when a grown-up and a child explore it **together**. It takes about as long as you like; each stop can be done on its own.
+**Option 1: Play online.** Open the [live page](https://lunarair.github.io/AI-demo-for-kids/) in any web browser, on a computer, tablet or phone.
+
+**Option 2: Download it and use it completely offline.** 📴
+- The whole demo is **one single file**: [`index.html`](index.html). Download it, then double-click it to open it in your web browser.
+- It runs **completely offline**. No internet, no installing and no sign-up are needed. Great for classrooms, car trips or anywhere without Wi-Fi.
+- The only difference offline is the font: the page uses a built-in font instead of the "Fredoka" font.
+
+**Tip:** it works best when a grown-up and a child explore it **together**. Take as long as you like; each stop can be done on its own.
 
 ## 🔒 Privacy
 
 - The page collects **no data**. It uses no cookies, no browser storage and no tracking.
 - The name your child types stays on the page only while it is open.
-- The only outside connection is to Google Fonts, to load the "Fredoka" font.
+- The only outside connection is to Google Fonts, to load the "Fredoka" font. If you use the page offline, there is no outside connection at all.
 
 ## ⚠️ Please note
 
