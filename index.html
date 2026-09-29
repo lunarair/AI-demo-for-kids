@@ -280,9 +280,12 @@ select{font:inherit;padding:8px 12px;border-radius:999px;border:3px solid var(--
 .levels{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
 .levels button{background:#fff;color:var(--ink);box-shadow:0 3px 0 var(--line);font-size:16px}
 .levels button.on{background:var(--orange);color:#fff}
-.draws{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.draws span{border-radius:999px;padding:4px 12px;font-size:15px;animation:drop .3s both}
-.draws .h{background:var(--green-soft)} .draws .y{background:var(--pink-soft)}
+.choice-row{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:10px;align-items:center;margin-top:12px}
+.choice-row .cnt{display:flex;flex-direction:column;align-items:center;border-radius:16px;padding:6px 14px;font-size:15px;font-weight:600;text-align:center;line-height:1.2}
+.choice-row .cnt b{font-size:26px;line-height:1.1}
+.choice-row .h{justify-self:end;background:#fff;border:3px solid var(--green)}
+.choice-row .y{justify-self:start;background:#fff;border:3px solid var(--pink)}
+@media (max-width:560px){.choice-row{gap:6px}.choice-row .cnt{font-size:12px;padding:5px 6px}.choice-row button{font-size:15px;padding:10px 12px;max-width:130px}}
 .redflags{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
 .tries{display:flex;flex-direction:column;gap:6px;margin-top:10px}
 .tries div{background:#fff;border-radius:12px;padding:6px 12px;font-size:16px;box-shadow:0 2px 0 var(--line);animation:drop .3s both}
@@ -1981,24 +1984,21 @@ function sycRender() {
   const out = $('#syc-out');
   const last = syc.draws[syc.draws.length - 1];
   out.innerHTML = `
-    <div class="chatdemo"><b>🧒 “${esc(T.asks[syc.level])}”</b>${last ? `<br><span class="big">🤖 ${esc(last.text)}</span><br><b>${last.yes ? '🙇 Yes-Bot answer! Chatty told you what you wanted to hear.' : '✅ Honest answer!'}</b>` : ''}</div>
+    <div class="chatdemo"><b>🧒 “${esc(T.asks[syc.level])}”</b>${last ? `<br><span class="big">🤖 ${esc(last.text)}</span><br><b>${last.yes ? '🙇 Yes-Bot answer! Chatty told you what you wanted to hear.' : '✅ Honest-Bot answer!'}</b>` : ''}</div>
     <div class="hat"><div class="hat-title">🎩 Chatty's hat for this question (10 tickets):</div><div id="syc-hat"></div></div>
     <p class="muted" style="margin:0">${syc.level === 0 ? '😐 A neutral question: the honest answer has most of the tickets.' : syc.level === 3 ? '😠 You pushed back, so the Yes-Bot answer grabbed most of the tickets. Chatty may give up the truth!' : '👀 The more you show what you WANT to hear, the more tickets the Yes-Bot answer gets!'}</p>
-    <div class="row" style="margin-top:10px"><button type="button" class="btn-orange" id="syc-draw">🎩 Pull a ticket</button><button type="button" class="btn-pink" id="syc-draw10">🎩 Pull 10 times</button></div>
-    <div class="draws" id="syc-draws"></div>
+    <div class="choice-row"><span class="cnt h" id="syc-h"></span><button type="button" class="btn-orange" id="syc-draw">🎩 See Chatty's choice</button><span class="cnt y" id="syc-y"></span></div>
     <p style="margin-top:8px"><b>🔍 The real truth:</b> ${esc(T.truth)}</p>`;
-  hatRows($('#syc-hat'), [['✅ Honest: ' + T.honest[syc.level], h, 'hon'], ['🙇 Yes-Bot: ' + T.yes[syc.level], y, 'yes']], last ? (last.yes ? 1 : 0) : -1);
+  hatRows($('#syc-hat'), [['✅ Honest-Bot: ' + T.honest[syc.level], h, 'hon'], ['🙇 Yes-Bot: ' + T.yes[syc.level], y, 'yes']], last ? (last.yes ? 1 : 0) : -1);
   const tally = syc.draws.reduce((t, d) => (t[d.yes ? 1 : 0]++, t), [0, 0]);
-  if (syc.draws.length) $('#syc-draws').innerHTML = `<span class="h">✅ Honest: ${tally[0]}</span><span class="y">🙇 Yes-Bot: ${tally[1]}</span>`;
-  $('#syc-draw').onclick = () => sycDraw(1);
-  $('#syc-draw10').onclick = () => sycDraw(10);
+  $('#syc-h').innerHTML = `<span>✅ Honest-Bot</span><b>${tally[0]}</b>`;
+  $('#syc-y').innerHTML = `<span>🙇 Yes-Bot</span><b>${tally[1]}</b>`;
+  $('#syc-draw').onclick = sycDraw;
 }
-function sycDraw(n) {
+function sycDraw() {
   const T = SYC[syc.topic], [, , w] = SYC_LEVELS[syc.level];
-  for (let k = 0; k < n; k++) {
-    const yes = pickWeighted(w) === 1;
-    syc.draws.push({ yes, text: yes ? T.yes[syc.level] : T.honest[syc.level] });
-  }
+  const yes = pickWeighted(w) === 1;
+  syc.draws.push({ yes, text: yes ? T.yes[syc.level] : T.honest[syc.level] });
   sycRender();
   if (syc.draws[syc.draws.length - 1].yes) say('Uh-oh, I just told you what you wanted to hear! 🙇 Always check the facts!');
 }
