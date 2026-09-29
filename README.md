@@ -2,6 +2,8 @@
 
 **A small, fun, interactive web page that explains how AI chatbots (Large Language Models, or LLMs) work, made for children around 9 years old.**
 
+*Made by Claude to explain itself.* 🤖
+
 ### 👉 [Try it live: lunarair.github.io/AI-demo-for-kids](https://lunarair.github.io/AI-demo-for-kids/)
 
 ## 👋 Why I made this
