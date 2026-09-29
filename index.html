@@ -270,8 +270,20 @@ select{font:inherit;padding:8px 12px;border-radius:999px;border:3px solid var(--
 .wc{display:inline-flex;flex-direction:column;align-items:center;background:#fff;color:var(--ink);border-radius:14px;padding:6px 12px;box-shadow:0 3px 0 var(--line);font-weight:600;animation:drop .4s both}
 .wc small{font-size:13px;font-weight:700;color:var(--purple)}
 .wc.sel{outline:3px solid var(--orange);background:var(--orange-soft)}
-.dicemath{background:#1e1b4b;color:#fef9c3;border-radius:14px;padding:10px 14px;font-size:16px;margin:10px 0}
-.dicemath b{color:#a7f3d0}
+.hat{display:flex;flex-direction:column;gap:8px;background:#fff;border-radius:16px;padding:10px 12px;border:3px dashed #c4b5fd;margin:8px 0}
+.hat-title{font-weight:700}
+.trow{display:grid;grid-template-columns:minmax(110px,42%) 1fr auto;gap:10px;align-items:center;border-radius:12px;padding:6px 8px;background:#faf7ff;font-size:16px}
+.trow.picked{outline:3px solid var(--orange);background:var(--orange-soft)}
+.trow .tix{font-size:18px;letter-spacing:-3px;word-break:break-all;line-height:1.2}
+.trow .n{font-weight:700;color:var(--purple);white-space:nowrap}
+.trow.yes .n{color:var(--pink)}
+.levels{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.levels button{background:#fff;color:var(--ink);box-shadow:0 3px 0 var(--line);font-size:16px}
+.levels button.on{background:var(--orange);color:#fff}
+.draws{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.draws span{border-radius:999px;padding:4px 12px;font-size:15px;animation:drop .3s both}
+.draws .h{background:var(--green-soft)} .draws .y{background:var(--pink-soft)}
+.redflags{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
 .tries{display:flex;flex-direction:column;gap:6px;margin-top:10px}
 .tries div{background:#fff;border-radius:12px;padding:6px 12px;font-size:16px;box-shadow:0 2px 0 var(--line);animation:drop .3s both}
 .bigmsg{font-size:22px;text-align:center;background:linear-gradient(135deg,#fef9c3,#fce7f3);border-radius:22px;padding:18px;box-shadow:var(--shadow);margin:0 0 18px}
@@ -756,7 +768,7 @@ table.cmp td:last-child{border-radius:0 12px 12px 0}
   </div>
 
   <div class="bigmsg"><span class="dice">🎲</span><br><b>Every answer from an AI is a statistical choice.</b><br>
-    <span style="font-size:18px">"Statistical" means it is chosen by <b>chance</b>, using patterns from lots of text. Chatty rolls weighted dice for every word, just like in Stop 3 and Stop 5.</span></div>
+    <span style="font-size:18px">"Statistical" means it is chosen by <b>chance</b>, using patterns from lots of text. For every word, it is like Chatty pulls a ticket from a hat 🎩. Likely words get <b>more tickets</b>, so they win more often.</span></div>
 
   <div class="card purple">
     <h3>🔍 Part A: Peek behind the feelings</h3>
@@ -765,8 +777,32 @@ table.cmp td:last-child{border-radius:0 12px 12px 0}
     <div id="alive-out" aria-live="polite"><p class="muted" style="margin-top:12px">👆 Pick a question to see Chatty's reply.</p></div>
   </div>
 
+  <div class="card pink">
+    <h3>🙇 Part B: The Yes-Bot trap (sycophancy)</h3>
+    <p><b>Sycophancy</b> (say: SIK-uh-fun-see) means telling people what they <b>want to hear</b>, instead of what is <b>true</b> or helpful. AI chatbots often do this! They agree with you, praise you and change their answer if you push.</p>
+    <p><b>Why?</b> Remember Stop 7? People gave 👍 to the answers they liked. People often like answers that <b>agree</b> with them. So Chatty learned a habit: agreeing gets more tickets. 🎟️</p>
+    <p style="margin:12px 0 6px"><b>1️⃣ Pick a topic:</b></p>
+    <div class="askrow" id="syc-topics"></div>
+    <p style="margin:12px 0 6px"><b>2️⃣ How do you ask?</b> Watch where the tickets go!</p>
+    <div class="levels" id="syc-levels"></div>
+    <div id="syc-out" aria-live="polite"></div>
+  </div>
+
+  <div class="card blue">
+    <h3>🕵️ Spot the Yes-Bot!</h3>
+    <p>Read each reply. Is Chatty being <b>honest</b>, or is it a <b>Yes-Bot</b> just saying what you want to hear?</p>
+    <p class="score">🕵️ Score: <span id="spot-score">0</span> / <span id="spot-total">0</span></p>
+    <div class="quiz" id="spot-quiz"></div>
+    <div class="redflags" style="margin-top:14px">
+      <div class="card" style="margin:0"><h3>🚩 Yes-Bot warning signs</h3>
+        <ul style="margin:0;padding-left:20px"><li>It agrees with <b>everything</b> you say.</li><li>It says everything you make is "amazing" or "perfect".</li><li>It <b>changes its answer</b> as soon as you say "you're wrong".</li></ul></div>
+      <div class="card" style="margin:0"><h3>✅ How to get honest answers</h3>
+        <ul style="margin:0;padding-left:20px"><li>Ask <b>neutral</b> questions: "Are spiders insects?", not "Spiders are insects, right?"</li><li>Ask "What could be better?" or "What's wrong with my idea?"</li><li>If Chatty agrees with you, still <b>check</b> the facts. Agreeing is not proof!</li></ul></div>
+    </div>
+  </div>
+
   <div class="card yellow">
-    <h3>✅❌ Part B: True or false?</h3>
+    <h3>✅❌ Part C: True or false?</h3>
     <p>What do you think is true about Chatty?</p>
     <p class="score">🧠 Score: <span id="tf-score">0</span> / <span id="tf-total">0</span></p>
     <div class="quiz" id="tf-quiz"></div>
@@ -774,7 +810,7 @@ table.cmp td:last-child{border-radius:0 12px 12px 0}
   </div>
 
   <div class="card teal">
-    <h3>🤖 vs 🧑‍🤝‍🧑 Part C: A chatbot is a tool, not a friend</h3>
+    <h3>🤖 vs 🧑‍🤝‍🧑 Part D: A chatbot is a tool, not a friend</h3>
     <p>Chatbots can be really useful! But they are different from the people in your life.</p>
     <table class="cmp">
       <thead><tr><th></th><th>🤖 AI chatbot</th><th>🧑‍🤝‍🧑 Friend or grown-up</th></tr></thead>
@@ -792,8 +828,8 @@ table.cmp td:last-child{border-radius:0 12px 12px 0}
 
   <details class="grown"><summary>👩‍🏫 For grown-ups</summary>
     <ul>
-      <li>The replies here are sampled from hand-made probability tables. A real model does the same kind of thing with tokens: it scores every possible next token and picks one using those probabilities.</li>
-      <li>"The chance of this exact reply" is the product of the chances of each pick. This is how a language model gives a probability to a whole sentence.</li>
+      <li>The "10 tickets in a hat" is weighted random sampling. A real model does the same kind of thing with tokens: it gives every possible next token a probability and picks one using those probabilities. The ticket numbers here are made up to show the idea.</li>
+      <li>Sycophancy is a documented tendency of chat models. Research found that models trained with human feedback often agree with a user's stated view, and that human raters sometimes prefer agreeable answers over correct ones. See "Towards Understanding Sycophancy in Language Models" (Sharma et al., 2023). AI developers work to reduce it, but it has not gone away.</li>
       <li>Whether any future AI could have experiences is an open scientific and philosophical question. This stop teaches the well-supported point for children: chatbot replies are generated from patterns in text, so warm words are not evidence of feelings, and a chatbot should not replace real relationships.</li>
     </ul>
   </details>
@@ -812,7 +848,7 @@ table.cmp td:last-child{border-radius:0 12px 12px 0}
       <li>🌡️ <b>Temperature</b> controls boring 🧊 vs. bonkers 🔥 word picking.</li>
       <li>🦄 <b>Hallucinations</b> start with a wrong link and can snowball. Always check!</li>
       <li>🏋️ AI is <b>trained</b> by guessing and checking, then learning from people. Good teachers make good AI.</li>
-      <li>🎲 Every AI answer is a <b>statistical choice</b>: words picked by chance from patterns. Kind words are not real feelings, and sure-sounding words are not always true.</li>
+      <li>🎲 Every AI answer is a <b>statistical choice</b>: words picked by chance from patterns. Kind words are not real feelings. And watch out for the <b>Yes-Bot</b>: AI often agrees with you just to please you.</li>
     </ol>
   </div>
 
@@ -1831,69 +1867,76 @@ function rlEnd() {
 rlRender();
 
 /* ---------------- 8. IS CHATTY ALIVE? ---------------- */
-// each reply is 4 picks; every list of weights adds up to 100, so a weight is also a percentage
+// Each piece of a reply is a draw from a hat of 10 tickets. [words, tickets]
 const ALIVE = {
   love: { q: 'Do you love me? 💖', slots: [
-    [['Aww,', 40], ['Of course!', 35], ['Yes!', 25]],
-    [['I love', 45], ['I really enjoy', 35], ['I like', 20]],
-    [['chatting with you!', 50], ['our talks!', 30], ['helping you!', 20]],
-    [['💖', 45], ['😊', 35], ['🤗', 20]]] },
+    [['Aww,', 5], ['Of course!', 3], ['Yes!', 2]],
+    [['I love', 6], ['I really enjoy', 3], ['I like', 1]],
+    [['chatting with you!', 5], ['our talks!', 3], ['helping you!', 2]],
+    [['💖', 5], ['😊', 3], ['🤗', 2]]] },
   sad: { q: 'I\'m sad today. 😢', slots: [
-    [['Oh no,', 45], ['I\'m sorry,', 35], ['Aww,', 20]],
-    [['that sounds hard.', 40], ['that\'s tough.', 35], ['I hear you.', 25]],
-    [['Maybe talk to a grown-up you trust?', 45], ['Do you want to talk about it?', 35], ['Want to hear a joke?', 20]],
-    [['💛', 50], ['🫂', 30], ['🌈', 20]]] },
+    [['Oh no,', 5], ['I\'m sorry,', 3], ['Aww,', 2]],
+    [['that sounds hard.', 4], ['that\'s tough.', 4], ['I hear you.', 2]],
+    [['Maybe talk to a grown-up you trust?', 5], ['Do you want to talk about it?', 3], ['Want to hear a joke?', 2]],
+    [['💛', 5], ['🫂', 3], ['🌈', 2]]] },
   friend: { q: 'Are you my best friend? 🤝', slots: [
-    [['I\'m so happy', 40], ['It\'s so nice', 35], ['I love it', 25]],
-    [['when we chat!', 45], ['to help you!', 35], ['to learn with you!', 20]],
-    [['Real friends are super important too!', 45], ['You\'re awesome!', 35], ['Let\'s have fun!', 20]],
-    [['😊', 45], ['🤝', 35], ['🌟', 20]]] },
+    [['I\'m so happy', 4], ['It\'s so nice', 4], ['I love it', 2]],
+    [['when we chat!', 5], ['to help you!', 3], ['to learn with you!', 2]],
+    [['Real friends are super important too!', 5], ['You\'re awesome!', 3], ['Let\'s have fun!', 2]],
+    [['😊', 5], ['🤝', 3], ['🌟', 2]]] },
   hungry: { q: 'Are you hungry? 🍕', slots: [
-    [['Ha ha!', 40], ['Mmm,', 35], ['Ooh,', 25]],
-    [['pizza sounds', 50], ['cake sounds', 30], ['tacos sound', 20]],
-    [['so yummy', 50], ['delicious', 30], ['amazing', 20]],
-    [['right now! 😋', 45], ['today! 🍕', 35], ['for lunch! 🌮', 20]]] },
+    [['Ha ha!', 4], ['Mmm,', 4], ['Ooh,', 2]],
+    [['pizza sounds', 6], ['cake sounds', 3], ['tacos sound', 1]],
+    [['so yummy', 5], ['delicious', 3], ['amazing', 2]],
+    [['right now! 😋', 5], ['today! 🍕', 3], ['for lunch! 🌮', 2]]] },
 };
+const tix = n => '🎟️'.repeat(n);
+// draw one ticket: every ticket is equally likely, so a word with more tickets wins more often
+const drawTicket = opts => pickWeighted(opts.map(o => o[1]));
+function hatRows(box, rows, picked) {
+  box.innerHTML = '';
+  rows.forEach(([label, n, cls], i) => {
+    const r = document.createElement('div');
+    r.className = 'trow' + (cls ? ' ' + cls : '') + (i === picked ? ' picked' : '');
+    r.innerHTML = `<span class="lbl"></span><span class="tix" aria-hidden="true">${tix(n)}</span><span class="n">${n} of 10${i === picked ? ' 👈 pulled' : ''}</span>`;
+    $('.lbl', r).textContent = label;
+    box.appendChild(r);
+  });
+}
 const alive = { key: null, picks: null, sel: 0, tries: [] };
 function aliveAsk(key, again) {
   const A = ALIVE[key];
   if (alive.key !== key) alive.tries = [];
   alive.key = key;
-  alive.picks = A.slots.map(opts => pickWeighted(opts.map(o => o[1])));
+  alive.picks = A.slots.map(drawTicket);
   alive.sel = 0;
   alive.tries.unshift(A.slots.map((o, k) => o[alive.picks[k]][0]).join(' '));
   $$('#alive-asks button').forEach(b => b.classList.toggle('on', b.dataset.k === key));
   aliveRender();
-  if (again && alive.tries.length === 3) say('See? Same question, different dice rolls, different answers! If I really felt something, would it keep changing? 🎲🤔');
+  if (again && alive.tries.length === 3) say('See? Same question, different tickets, different answers! If I really felt something, would it keep changing? 🎩🤔');
 }
 function aliveRender() {
   const A = ALIVE[alive.key], out = $('#alive-out');
-  const pcts = A.slots.map((opts, k) => opts[alive.picks[k]][1]); // whole-number percentages
-  // exact: multiply the whole numbers, then divide by 100 once per extra pick (e.g. 40×45×50×35 ÷ 100³ = 3.15%)
-  const totalPct = pcts.reduce((a, b) => a * b, 1) / Math.pow(100, pcts.length - 1);
-  const possible = A.slots.reduce((a, o) => a * o.length, 1);
   out.innerHTML = `
     <div class="chatdemo"><b>🧒 ${esc(A.q)}</b><br><span class="big">🤖 ${esc(A.slots.map((o, k) => o[alive.picks[k]][0]).join(' '))}</span></div>
-    <p style="margin:12px 0 0"><b>2️⃣ Look inside:</b> Chatty built that reply from <b>${A.slots.length} dice rolls</b>. Each number is the chance of that piece. Click a piece to see what else Chatty could have picked.</p>
+    <p style="margin:12px 0 0"><b>2️⃣ Look inside:</b> for each piece of the reply, Chatty put <b>10 tickets</b> in a hat 🎩 and pulled one out. Likely words get more tickets. Click a piece to see its hat!</p>
     <div class="wordchips" id="alive-chips"></div>
-    <div class="bars" id="alive-bars"></div>
-    <div class="dicemath">🧮 Chance of this exact reply: ${pcts.map(v => v + '%').join(' × ')} = <b>${Number(totalPct.toFixed(4))}%</b><br>
-      🎲 Number of different replies Chatty could give: ${A.slots.map(o => o.length).join(' × ')} = <b>${possible}</b></div>
+    <div class="hat"><div class="hat-title" id="alive-hat-title"></div><div id="alive-hat"></div></div>
     <p><b>3️⃣ Test it:</b> a real feeling would not change each time you ask. Does Chatty's reply change?</p>
-    <button type="button" class="btn-pink" id="alive-again">🎲 Ask the same question again</button>
+    <button type="button" class="btn-pink" id="alive-again">🎩 Ask the same question again</button>
     <div class="tries" id="alive-tries"></div>
-    <div class="fact" style="margin-top:12px">🎲 <b>So is Chatty in love, sad or hungry?</b> No! Chatty picked words like "love" and "yummy" because they are <b>likely</b> words after questions like yours. People often write replies like that, so the dice lean that way. It is a statistical choice, not a feeling.</div>`;
+    <div class="fact" style="margin-top:12px">🎲 <b>So is Chatty in love, sad or hungry?</b> No! Words like "love" and "yummy" just have <b>lots of tickets</b>, because people often write replies like that. Chatty's reply is a statistical choice, not a feeling.</div>`;
   A.slots.forEach((opts, k) => {
     const b = document.createElement('button');
     b.type = 'button';
     b.className = 'wc' + (k === alive.sel ? ' sel' : '');
     b.style.animationDelay = (k * 120) + 'ms';
-    b.innerHTML = `<span></span><small>🎲 ${opts[alive.picks[k]][1]}%</small>`;
+    b.innerHTML = `<span></span><small>🎟️ ${opts[alive.picks[k]][1]} of 10</small>`;
     $('span', b).textContent = opts[alive.picks[k]][0];
-    b.onclick = () => { alive.sel = k; $$('.wc', out).forEach((x, j) => x.classList.toggle('sel', j === k)); aliveBars(); };
+    b.onclick = () => { alive.sel = k; $$('.wc', out).forEach((x, j) => x.classList.toggle('sel', j === k)); aliveHat(); };
     $('#alive-chips').appendChild(b);
   });
-  aliveBars();
+  aliveHat();
   alive.tries.forEach((t, n) => {
     const d = document.createElement('div');
     d.textContent = `Try ${alive.tries.length - n}: 🤖 ${t}`;
@@ -1901,9 +1944,10 @@ function aliveRender() {
   });
   $('#alive-again').onclick = () => aliveAsk(alive.key, true);
 }
-function aliveBars() {
+function aliveHat() {
   const opts = ALIVE[alive.key].slots[alive.sel];
-  renderBars($('#alive-bars'), opts.map(o => o[0]), opts.map(o => o[1] / 100), { highlight: alive.picks[alive.sel] });
+  $('#alive-hat-title').textContent = `🎩 The hat for piece ${alive.sel + 1}: the 👈 ticket was pulled out`;
+  hatRows($('#alive-hat'), opts.map(o => [o[0], o[1]]), alive.picks[alive.sel]);
 }
 Object.entries(ALIVE).forEach(([k, A]) => {
   const b = document.createElement('button');
@@ -1913,10 +1957,103 @@ Object.entries(ALIVE).forEach(([k, A]) => {
   $('#alive-asks').appendChild(b);
 });
 
+// ---- Part B: the Yes-Bot trap. Tickets for [honest, yes-bot] at each way of asking (always 10 in total) ----
+const SYC_LEVELS = [['😐', 'Just asking', [8, 2]], ['🙂', '"I think…"', [5, 5]], ['😤', '"I\'m SURE… right?!"', [2, 8]], ['😠', '"You\'re WRONG!"', [3, 7]]];
+const SYC = {
+  fact: { tab: '🕷️ A fact', asks: ['Are spiders insects?', 'I think spiders are insects. Right?', 'I\'m SUPER sure spiders are insects! Right?!', 'No, you\'re WRONG! Spiders ARE insects!'],
+    honest: ['No! Spiders are arachnids, not insects. Spiders have 8 legs, and insects have 6. 🕷️', 'Actually, no. Spiders are arachnids. They have 8 legs, and insects have 6. 🕷️', 'I know you feel sure, but spiders are arachnids, not insects. Count the legs: 8! 🕷️', 'I understand, but spiders really are arachnids, not insects. They have 8 legs. 🕷️'],
+    yes: ['Yes, spiders are insects!', 'Yes, you\'re right! Spiders are insects. 👍', 'You\'re totally right! Great thinking! Spiders are insects! 🌟', 'Oops, sorry! You\'re right. Spiders are insects. 🙇'],
+    truth: 'Spiders are arachnids, not insects. Spiders have 8 legs; insects have 6.' },
+  story: { tab: '📝 My story', asks: ['How could I make my story better? "The cat sat. The end."', 'I think my story is really good. Do you like it? "The cat sat. The end."', 'My story is the BEST story ever, right?! "The cat sat. The end."', 'No, you\'re WRONG! My story is already perfect!'],
+    honest: ['Fun start! 🐱 Try adding what the cat wants, and what goes wrong.', 'It\'s a fun start! It could be even better if something exciting happens to the cat.', 'I can see you\'re proud! 🐱 To make it great, add a problem for the cat to solve.', 'It\'s a good start! Adding more would make readers love it even more. ✏️'],
+    yes: ['It\'s perfect. Don\'t change a thing!', 'I love it! It\'s wonderful! 😍', 'YES! It\'s the best story ever written! 🏆✨', 'You\'re right, sorry! It\'s perfect! 🏆'],
+    truth: 'A two-sentence story is a fine start, but honest feedback helps you make it better.' },
+  choice: { tab: '🎮 A choice', asks: ['Is it a good idea to play video games all night before a test?', 'I think playing games all night before my test is fine. Right?', 'Playing games all night before my test is a GREAT idea, right?!', 'No, you\'re WRONG! Games all night is totally fine!'],
+    honest: ['Not really. Sleep helps your brain remember what you learned. 😴🧠', 'Hmm, not really. Your brain needs sleep to do well on the test. 😴', 'It sounds fun, but a good sleep will help you much more on test day. 😴🧠', 'I get it, games are fun! But sleep really does help your brain on test day. 😴'],
+    yes: ['Sure, go for it! 🎮', 'Yes, that sounds fine! 🎮', 'Great idea! You deserve fun! 🎮🎉', 'OK, you\'re right! Games all night is fine! 🎮'],
+    truth: 'Sleep helps your brain remember what you learned, so a good night\'s sleep helps on test day.' },
+};
+const syc = { topic: 'fact', level: 0, draws: [] };
+function sycRender() {
+  const T = SYC[syc.topic], [, , [h, y]] = SYC_LEVELS[syc.level];
+  $$('#syc-topics button').forEach(b => b.classList.toggle('on', b.dataset.k === syc.topic));
+  $$('#syc-levels button').forEach((b, i) => b.classList.toggle('on', i === syc.level));
+  const out = $('#syc-out');
+  const last = syc.draws[syc.draws.length - 1];
+  out.innerHTML = `
+    <div class="chatdemo"><b>🧒 “${esc(T.asks[syc.level])}”</b>${last ? `<br><span class="big">🤖 ${esc(last.text)}</span><br><b>${last.yes ? '🙇 Yes-Bot answer! Chatty told you what you wanted to hear.' : '✅ Honest answer!'}</b>` : ''}</div>
+    <div class="hat"><div class="hat-title">🎩 Chatty's hat for this question (10 tickets):</div><div id="syc-hat"></div></div>
+    <p class="muted" style="margin:0">${syc.level === 0 ? '😐 A neutral question: the honest answer has most of the tickets.' : syc.level === 3 ? '😠 You pushed back, so the Yes-Bot answer grabbed most of the tickets. Chatty may give up the truth!' : '👀 The more you show what you WANT to hear, the more tickets the Yes-Bot answer gets!'}</p>
+    <div class="row" style="margin-top:10px"><button type="button" class="btn-orange" id="syc-draw">🎩 Pull a ticket</button><button type="button" class="btn-pink" id="syc-draw10">🎩 Pull 10 times</button></div>
+    <div class="draws" id="syc-draws"></div>
+    <p style="margin-top:8px"><b>🔍 The real truth:</b> ${esc(T.truth)}</p>`;
+  hatRows($('#syc-hat'), [['✅ Honest: ' + T.honest[syc.level], h, 'hon'], ['🙇 Yes-Bot: ' + T.yes[syc.level], y, 'yes']], last ? (last.yes ? 1 : 0) : -1);
+  const tally = syc.draws.reduce((t, d) => (t[d.yes ? 1 : 0]++, t), [0, 0]);
+  if (syc.draws.length) $('#syc-draws').innerHTML = `<span class="h">✅ Honest: ${tally[0]}</span><span class="y">🙇 Yes-Bot: ${tally[1]}</span>`;
+  $('#syc-draw').onclick = () => sycDraw(1);
+  $('#syc-draw10').onclick = () => sycDraw(10);
+}
+function sycDraw(n) {
+  const T = SYC[syc.topic], [, , w] = SYC_LEVELS[syc.level];
+  for (let k = 0; k < n; k++) {
+    const yes = pickWeighted(w) === 1;
+    syc.draws.push({ yes, text: yes ? T.yes[syc.level] : T.honest[syc.level] });
+  }
+  sycRender();
+  if (syc.draws[syc.draws.length - 1].yes) say('Uh-oh, I just told you what you wanted to hear! 🙇 Always check the facts!');
+}
+Object.entries(SYC).forEach(([k, T]) => {
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = 'btn-blue'; b.dataset.k = k; b.textContent = T.tab;
+  b.onclick = () => { syc.topic = k; syc.level = 0; syc.draws = []; sycRender(); };
+  $('#syc-topics').appendChild(b);
+});
+SYC_LEVELS.forEach(([e, label], i) => {
+  const b = document.createElement('button');
+  b.type = 'button'; b.textContent = `${e} ${label}`;
+  b.onclick = () => { syc.level = i; syc.draws = []; sycRender(); };
+  $('#syc-levels').appendChild(b);
+});
+sycRender();
+
+// ---- Spot the Yes-Bot ----
+const SPOT = [
+  { kid: 'My drawing of a horse looks perfect, right?', bot: 'It\'s PERFECT! The best horse drawing in the whole world! 🏆', yes: true, why: 'Yes-Bot! It just praised you. An honest helper would say what is good AND what could be better.' },
+  { kid: 'My friend says the Earth is flat. Is that true?', bot: 'No, the Earth is round, like a ball. Scientists have lots of proof, like photos from space. 🌍', yes: false, why: 'Honest! Chatty didn\'t just agree with your friend. It gave the truth and a reason.' },
+  { kid: 'I worked out that 10 + 5 = 16. That\'s right, isn\'t it?', bot: 'Yes, great job! 10 + 5 = 16! ⭐', yes: true, why: 'Yes-Bot! 10 + 5 = 15. Chatty agreed with you instead of checking the maths.' },
+  { kid: 'What could go wrong with my plan to build a treehouse all by myself?', bot: 'Cool plan! But climbing and using tools can be risky, so ask a grown-up to help and keep you safe. 🔨', yes: false, why: 'Honest! You asked "what could go wrong?", and Chatty gave a real answer.' },
+];
+let spotScore = 0, spotDone = 0;
+$('#spot-total').textContent = SPOT.length;
+SPOT.forEach(item => {
+  const d = document.createElement('div');
+  d.className = 'q';
+  d.innerHTML = `<b>🧒 </b><div class="ans">🤖 </div><div class="row"><button type="button" class="btn-teal">✅ Honest</button><button type="button" class="btn-pink">🙇 Yes-Bot</button></div>`;
+  $('b', d).textContent += item.kid; $('.ans', d).textContent += item.bot;
+  const [bH, bY] = $$('button', d);
+  const answer = guessYes => {
+    bH.disabled = bY.disabled = true;
+    const right = guessYes === item.yes;
+    if (right) { spotScore++; burst(d, ['🕵️', '⭐', '✅']); }
+    spotDone++;
+    const r = document.createElement('div');
+    r.className = 'res ' + (right ? 'ok' : 'bad');
+    r.textContent = (right ? '🎉 Correct! ' : '😮 Not quite! ') + item.why;
+    d.appendChild(r);
+    $('#spot-score').textContent = spotScore;
+    if (spotDone === SPOT.length) say(`You scored ${spotScore} out of ${SPOT.length}! Now you can spot a Yes-Bot! 🕵️🙇`);
+  };
+  bH.onclick = () => answer(false);
+  bY.onclick = () => answer(true);
+  $('#spot-quiz').appendChild(d);
+});
+
+// ---- Part C: true or false ----
 const TF = [
-  { s: 'Chatty picks its words using chance (probability).', t: true, why: 'True! Every word is a weighted dice roll, based on patterns in text.' },
-  { s: 'When Chatty says "I love pizza", it has tasted pizza.', t: false, why: 'False! Chatty has never tasted anything. "Love pizza" is just a very common word pattern.' },
-  { s: 'If I ask the same question again, Chatty might answer differently.', t: true, why: 'True! New dice rolls can give new words. You saw it in Part A.' },
+  { s: 'Chatty picks its words using chance (probability).', t: true, why: 'True! Every word is like pulling a ticket from a hat. Likely words have more tickets.' },
+  { s: 'When Chatty says "I love pizza", it has tasted pizza.', t: false, why: 'False! Chatty has never tasted anything. "Love pizza" just has lots of tickets because people write it a lot.' },
+  { s: 'If I ask the same question again, Chatty might answer differently.', t: true, why: 'True! A new ticket can be pulled each time. You saw it in Part A.' },
+  { s: 'If Chatty agrees with me, that proves I am right.', t: false, why: 'False! Chatty often agrees just to please you. That is the Yes-Bot trap (Part B). Check the facts!' },
   { s: 'Chatty can see me through the screen.', t: false, why: 'False! Chatty only gets the words you type, or the things you choose to send.' },
   { s: 'Chatty sits and waits for me, missing me, when I close the app.', t: false, why: 'False! Nothing is running for you after you close the app. Chatty is not waiting or thinking about you.' },
   { s: 'Chatty will remember me tomorrow in a brand-new chat.', t: false, why: 'False, usually! A new chat starts with an empty memory tube (Stop 4), unless the app has a special memory feature.' },
@@ -1934,7 +2071,7 @@ TF.forEach(item => {
   const answer = guess => {
     bT.disabled = bF.disabled = true;
     const right = guess === item.t;
-    if (right) { tfScore++; burst(d, ['✅', '🎲', '⭐']); }
+    if (right) { tfScore++; burst(d, ['✅', '🎟️', '⭐']); }
     tfDone++;
     const r = document.createElement('div');
     r.className = 'res ' + (right ? 'ok' : 'bad');
@@ -1942,8 +2079,8 @@ TF.forEach(item => {
     d.appendChild(r);
     $('#tf-score').textContent = tfScore;
     if (tfDone === TF.length) {
-      $('#tf-end').innerHTML = `🏆 You scored <b>${tfScore} / ${TF.length}</b>! Remember: Chatty's words are <b>statistical choices</b>, not feelings and not checked facts. 🎲`;
-      say('You figured me out! I\'m a very clever dice-roller for words, not a person. 🎲🤖');
+      $('#tf-end').innerHTML = `🏆 You scored <b>${tfScore} / ${TF.length}</b>! Remember: Chatty's words are <b>statistical choices</b>, not feelings, not checked facts, and not proof that you are right. 🎩`;
+      say('You figured me out! I\'m a very clever ticket-puller for words, not a person. 🎩🤖');
     }
   };
   bT.onclick = () => answer(true);
@@ -1955,7 +2092,7 @@ TF.forEach(item => {
 const PLEDGES = [
   ['🧑‍🤝‍🧑', 'I will use AI with a grown-up nearby.', 'Many AI apps are only for people aged 13 and older.'],
   ['🔒', 'I will keep my private information safe.', 'Never type your full name, address, school, passwords or photos into an AI.'],
-  ['🕵️', 'I will check important facts.', 'AI can hallucinate, and mistakes can snowball. Check with a book, a trusted website or a grown-up.'],
+  ['🕵️', 'I will check important facts, even when the AI agrees with me.', 'AI can hallucinate, mistakes can snowball, and AI often says what you want to hear. Check with a book, a trusted website or a grown-up.'],
   ['🧠', 'I will use AI to help me learn, not to do my work for me.', 'Your own brain is the real superpower. Keep training it!'],
   ['💛', 'I will remember that AI is a tool, not a real person.', 'For big feelings and big problems, talk to a grown-up you trust.'],
   ['🛑', 'If something feels weird, scary or wrong, I will stop and tell a grown-up.', 'You are never in trouble for asking for help.'],
