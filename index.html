@@ -1,0 +1,1220 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How AI Thinks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1e1b4b; --muted:#56567a; --card:#ffffff; --line:#e5e1f5;
+  --purple:#7c3aed; --purple-soft:#ede9fe; --pink:#db2777; --pink-soft:#fce7f3;
+  --yellow:#facc15; --yellow-soft:#fef9c3; --teal:#0f766e; --teal-soft:#ccfbf1;
+  --blue:#2563eb; --blue-soft:#dbeafe; --orange:#ea580c; --orange-soft:#ffedd5;
+  --green:#15803d; --green-soft:#dcfce7; --red:#dc2626; --red-soft:#fee2e2;
+  --radius:22px; --shadow:0 6px 0 rgba(30,27,75,.07), 0 10px 30px rgba(30,27,75,.08);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Fredoka','Comic Sans MS','Chalkboard SE',system-ui,sans-serif;font-size:18px;line-height:1.5;color:var(--ink);
+  background:#f5f0ff;
+  background-image:radial-gradient(circle at 10% 10%,#ffe4f3 0,transparent 35%),radial-gradient(circle at 90% 20%,#dbeafe 0,transparent 35%),radial-gradient(circle at 50% 100%,#dcfce7 0,transparent 40%);
+  background-attachment:fixed;min-height:100vh}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px 40px}
+header{text-align:center;padding:22px 0 4px}
+h1{font-size:clamp(28px,6vw,46px);margin:0;line-height:1.15}
+h1 .wiggle{display:inline-block;animation:wiggle 2.5s infinite}
+.tag{color:var(--muted);margin:4px 0 0}
+nav.stops{display:flex;gap:8px;overflow-x:auto;padding:12px 2px;position:sticky;top:0;z-index:10;background:rgba(245,240,255,.92);backdrop-filter:blur(6px)}
+button{font:inherit;cursor:pointer;border:none;border-radius:999px;padding:10px 16px;background:var(--purple);color:#fff;font-weight:600;box-shadow:0 4px 0 rgba(0,0,0,.18);transition:transform .1s,box-shadow .1s,background .2s}
+button:hover{transform:translateY(-2px)}
+button:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.18)}
+button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+button:focus-visible,[tabindex]:focus-visible,input:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.btn-pink{background:var(--pink)} .btn-teal{background:var(--teal)} .btn-orange{background:var(--orange)} .btn-blue{background:var(--blue)}
+.btn-ghost{background:#fff;color:var(--ink);box-shadow:0 4px 0 var(--line)}
+nav.stops button{flex:0 0 auto;background:#fff;color:var(--ink);box-shadow:0 3px 0 var(--line);font-size:15px;padding:8px 14px}
+nav.stops button.on{background:var(--purple);color:#fff}
+nav.stops button.done::after{content:' ⭐'}
+.chatty{display:flex;align-items:center;gap:12px;margin:8px 0 18px}
+.chatty .bot{font-size:54px;line-height:1;background:none;box-shadow:none;padding:0;animation:bob 2s ease-in-out infinite}
+.chatty .bot.shake{animation:wiggle .5s 2}
+.bubble{position:relative;background:#fff;border-radius:18px;padding:12px 16px;box-shadow:var(--shadow);flex:1;min-width:0}
+.bubble::before{content:'';position:absolute;left:-10px;top:50%;margin-top:-10px;border:10px solid transparent;border-right-color:#fff;border-left:0}
+.bubble small{display:block;color:var(--muted);font-size:13px}
+@keyframes bob{50%{transform:translateY(-6px) rotate(-4deg)}}
+@keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-12deg)}75%{transform:rotate(12deg)}}
+.page{display:none}
+.page.on{display:block;animation:pop .35s ease-out}
+@keyframes pop{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+h2{font-size:clamp(24px,4.5vw,34px);margin:4px 0 12px;line-height:1.2}
+h3{margin:0 0 8px;font-size:22px;line-height:1.25}
+p{margin:0 0 10px}
+.card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);margin:0 0 18px}
+.card.purple{background:var(--purple-soft)} .card.pink{background:var(--pink-soft)} .card.yellow{background:var(--yellow-soft)}
+.card.teal{background:var(--teal-soft)} .card.blue{background:var(--blue-soft)} .card.orange{background:var(--orange-soft)} .card.green{background:var(--green-soft)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.big{font-size:1.25em}
+.muted{color:var(--muted)}
+.fact{border-left:6px solid var(--yellow);background:var(--yellow-soft);padding:10px 14px;border-radius:12px;margin:12px 0}
+details.grown{background:#fff;border:2px dashed #c4b5fd;border-radius:16px;padding:10px 14px;margin:12px 0;font-size:16px}
+details.grown summary{cursor:pointer;font-weight:600}
+details.grown ul{margin:8px 0 0;padding-left:20px}
+.pager{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px}
+#stopnum{color:var(--muted);font-weight:600}
+
+/* intro */
+.guess{background:#fff;border-radius:18px;padding:14px;box-shadow:0 3px 0 var(--line);text-align:center}
+.guess .blank{display:inline-block;min-width:80px;border-bottom:3px dashed var(--purple);margin:0 4px}
+.guess .blank.show{border:none;background:var(--yellow);border-radius:8px;padding:0 8px;animation:pop .4s}
+.mapstop{background:#fff;color:var(--ink);border-radius:18px;padding:14px;box-shadow:0 3px 0 var(--line);text-align:left;font-weight:500;display:flex;gap:10px;align-items:center}
+.mapstop .e{font-size:34px}
+
+/* bars */
+.bars{display:flex;flex-direction:column;gap:8px}
+.bar-row{display:grid;grid-template-columns:minmax(90px,38%) 1fr 62px;align-items:center;gap:10px;background:#fff;color:var(--ink);border-radius:14px;padding:6px 10px;box-shadow:0 2px 0 var(--line);text-align:left;font-weight:500;width:100%}
+button.bar-row:hover{background:var(--yellow-soft)}
+.bar-track{height:18px;background:#f1eefb;border-radius:999px;overflow:hidden}
+.bar-fill{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--purple),var(--pink));transition:width .45s}
+.bar-row.hl{outline:3px solid var(--green)}
+.bar-pct{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+
+/* word brain */
+#wb-svg{width:100%;height:auto;background:#fcfbff;border-radius:18px;border:2px solid var(--line);touch-action:manipulation}
+#wb-svg .edge{stroke:#a78bfa;stroke-linecap:round;transition:stroke-width .5s,opacity .3s}
+#wb-svg .edge.flash{stroke:var(--pink);animation:flash 1s}
+#wb-svg .edge.dim{opacity:.1}
+#wb-svg .edge.on{stroke:var(--orange)}
+@keyframes flash{0%{opacity:.2}50%{opacity:1}}
+#wb-svg .node{cursor:pointer}
+#wb-svg .node circle{fill:#fff;stroke:#c4b5fd;stroke-width:3;transition:.3s}
+#wb-svg .node.lit circle{fill:var(--yellow-soft);stroke:var(--pink);stroke-width:5}
+#wb-svg .node.sel circle{fill:var(--orange-soft);stroke:var(--orange);stroke-width:5}
+#wb-svg .node .em{font-size:28px}
+#wb-svg .node .lbl{font-size:17px;font-weight:600;fill:var(--ink);font-family:inherit}
+#wb-sentence{min-height:54px;font-size:20px}
+#wb-sentence small{display:block;color:var(--muted);font-size:15px}
+
+/* tokens */
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;flex-direction:column;align-items:center;padding:6px 10px;border-radius:12px;font-weight:600;animation:drop .4s both;white-space:pre}
+.chip small{font-size:11px;opacity:.8;font-weight:500}
+.chip.byte{border:2px dashed rgba(0,0,0,.35)}
+@keyframes drop{from{transform:translateY(-20px) scale(.6);opacity:0}}
+#tok-input{font:inherit;width:100%;padding:12px 14px;border-radius:14px;border:3px solid #c4b5fd;background:#fff;color:var(--ink)}
+.stat{background:#fff;border-radius:14px;padding:8px 14px;box-shadow:0 2px 0 var(--line);font-weight:600}
+.stat b{font-size:24px;color:var(--purple)}
+.idline{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:15px;background:#1e1b4b;color:#a7f3d0;border-radius:12px;padding:10px 12px;word-break:break-all;margin-top:10px}
+
+/* attention */
+.att-words{display:flex;flex-wrap:wrap;gap:8px;padding:30px 0 6px}
+.att-w{position:relative;display:flex;flex-direction:column;align-items:center;padding:8px 12px;border-radius:14px;background:#fff;color:var(--ink);box-shadow:0 3px 0 var(--line);min-width:52px}
+.att-w .pct{font-size:12px;opacity:.85}
+.att-w.me{outline:3px dashed var(--orange);outline-offset:2px}
+.att-w .eyes{position:absolute;top:-28px;font-size:22px;animation:bob 1s infinite}
+#att-say{font-size:19px;min-height:30px}
+
+/* factory */
+.factory{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:12px 0}
+.station{background:#fff;border-radius:18px;padding:12px;box-shadow:0 3px 0 var(--line);text-align:center;border:3px solid transparent;transition:.3s;min-height:160px}
+.station.active{border-color:var(--pink);transform:scale(1.03);background:var(--pink-soft)}
+.st-emoji{font-size:40px;line-height:1.2}
+.st-out{font-size:15px;margin-top:6px;min-height:40px}
+
+/* story */
+.storybox{font-size:22px;background:#fffbea;border:3px dashed var(--yellow);border-radius:18px;padding:16px;min-height:90px}
+.new{background:var(--yellow);border-radius:8px;padding:0 4px;animation:pop .4s}
+#story-think{color:var(--muted);font-size:16px;margin:8px 0}
+
+/* context */
+.ctxcard .out{margin-top:10px;font-size:20px;min-height:36px}
+.ctxcard .out .emo{font-size:40px;vertical-align:middle}
+.pack{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}
+.slot{min-height:64px;border-radius:14px;border:3px dashed #c4b5fd;padding:6px;font-size:13px;display:flex;align-items:center;justify-content:center;text-align:center;background:#faf7ff;word-break:break-word;line-height:1.25}
+.slot.full{border-style:solid;background:#fff;animation:pop .3s}
+.slot.you{border-color:var(--blue)} .slot.bot{border-color:var(--pink)}
+.chatlog{max-height:340px;overflow:auto;display:flex;flex-direction:column;gap:6px;padding:10px;background:#fff;border-radius:16px;border:2px solid var(--line)}
+.msg{max-width:85%;padding:8px 12px;border-radius:16px;font-size:16px}
+.msg.you{align-self:flex-end;background:var(--blue-soft)}
+.msg.bot{align-self:flex-start;background:var(--pink-soft)}
+.msg.gone{opacity:.45}
+.msg.gone .t{text-decoration:line-through}
+.msg .gone-tag{font-size:12px;margin-left:6px;font-weight:600}
+#name-input{font:inherit;padding:8px 12px;border-radius:999px;border:3px solid var(--blue);width:150px;color:var(--ink)}
+.packmeter{font-weight:600}
+
+/* temperature */
+.thermo{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+input[type=range]{width:min(420px,100%);accent-color:var(--orange);height:30px}
+.tface{font-size:52px;line-height:1}
+.tval{font-size:30px;font-weight:700;color:var(--orange);min-width:70px}
+.samples{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;min-height:40px}
+.sample{background:#fff;border-radius:999px;padding:4px 12px;box-shadow:0 2px 0 var(--line);animation:drop .3s both;font-size:16px}
+select{font:inherit;padding:8px 12px;border-radius:999px;border:3px solid var(--orange);background:#fff;color:var(--ink)}
+
+/* hallucination */
+.quiz{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.q{background:#fff;border-radius:18px;padding:14px;box-shadow:0 3px 0 var(--line)}
+.q .ans{background:var(--purple-soft);border-radius:12px;padding:8px 12px;margin:8px 0}
+.q .res{margin-top:8px;padding:8px 12px;border-radius:12px;font-size:16px;animation:pop .3s}
+.q .res.ok{background:var(--green-soft)} .q .res.bad{background:var(--red-soft)}
+.q button{font-size:16px;padding:8px 12px}
+.score{font-size:22px;font-weight:700}
+
+/* training */
+.gym{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:12px 0}
+.ex{background:#fff;border-radius:16px;padding:10px 12px;box-shadow:0 3px 0 var(--line);border:3px solid transparent;transition:.2s}
+.ex.now{border-color:var(--orange);background:var(--orange-soft)}
+.ex .top{font-weight:600;margin-top:6px}
+.minibar{display:grid;grid-template-columns:78px 1fr 40px;gap:6px;align-items:center;font-size:14px}
+.minibar .bar-track{height:12px}
+.minibar .bar-fill{background:linear-gradient(90deg,var(--teal),var(--blue))}
+.minibar.right .bar-fill{background:linear-gradient(90deg,#22c55e,#15803d)}
+#loss-svg{width:100%;max-width:520px;height:auto;background:#fff;border-radius:14px;border:2px solid var(--line)}
+.rl-opts{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));margin:10px 0}
+.rl-opt{background:#fff;color:var(--ink);text-align:left;border-radius:16px;padding:12px 14px;box-shadow:0 3px 0 var(--line);font-weight:500}
+.rl-opt:hover{background:var(--yellow-soft)}
+.meter{height:22px;background:#fff;border-radius:999px;overflow:hidden;border:2px solid var(--line)}
+.meter span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--yellow),var(--green));transition:width .5s}
+.timeline{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.tl{background:#fff;border-radius:18px;padding:14px;box-shadow:0 3px 0 var(--line);position:relative}
+.tl .n{position:absolute;top:-12px;left:-6px;background:var(--orange);color:#fff;border-radius:999px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:700}
+.tl .e{font-size:38px}
+.chatdemo{background:#fff;border-radius:16px;padding:12px;border:2px solid var(--line);min-height:110px;margin-top:10px}
+
+.burst{position:fixed;pointer-events:none;font-size:30px;z-index:99;animation:burst 1.2s ease-out forwards}
+@keyframes burst{to{transform:translate(var(--dx),var(--dy)) rotate(360deg);opacity:0}}
+@media (max-width:560px){
+  body{font-size:17px}
+  .chatty .bot{font-size:44px}
+  .bar-row{grid-template-columns:minmax(80px,42%) 1fr 54px;gap:6px}
+  .storybox{font-size:19px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1><span class="wiggle">🤖</span> How Does AI Think?</h1>
+  <p class="tag">A fun trip inside a chatbot's brain 🧠✨</p>
+</header>
+
+<nav class="stops" id="stops" aria-label="Stops"></nav>
+
+<div class="chatty">
+  <button class="bot" id="bot" type="button" aria-label="Chatty the robot. Click for a joke">🤖</button>
+  <div class="bubble"><span id="say"></span><small>👆 Tap Chatty for a joke!</small></div>
+</div>
+
+<main>
+<!-- ================= START ================= -->
+<section class="page" data-nav="🏠 Start" data-say="Hi! I'm Chatty 🤖, a word-guessing robot. Let's go on an adventure inside my brain!">
+  <h2>👋 Hello, AI Explorer!</h2>
+  <div class="card">
+    <p class="big">Chatbots like ChatGPT, Claude and Gemini run on something called a <b>Large Language Model</b> (LLM for short).</p>
+    <div class="grid">
+      <div class="card purple" style="margin:0"><h3>🐘 Large</h3>It is HUGE. It has read more words than you could read in thousands of years!</div>
+      <div class="card pink" style="margin:0"><h3>💬 Language</h3>It works with words, like stories, questions and jokes.</div>
+      <div class="card teal" style="margin:0"><h3>🧮 Model</h3>It is a computer brain made of numbers and maths.</div>
+    </div>
+  </div>
+
+  <div class="card yellow">
+    <h3>🎯 Warm-up game: Guess the next word!</h3>
+    <p>Say your guess out loud, then click the card to check.</p>
+    <div class="grid" id="warmup"></div>
+    <p id="warmup-msg" class="big" style="margin-top:12px"></p>
+  </div>
+
+  <div class="card">
+    <h3>🗺️ Our 7 stops</h3>
+    <div class="grid" id="map"></div>
+  </div>
+</section>
+
+<!-- ================= 1. WORD BRAIN ================= -->
+<section class="page" data-nav="🧠 Word Brain" data-say="Click 'Read a sentence' and watch my word brain grow! 🧠💪">
+  <h2>🧠 Stop 1: The Word Brain</h2>
+  <div class="card">
+    <p>Your brain has about <b>86 billion neurons</b> (tiny thinking cells) that are linked together.</p>
+    <p>An AI has a <b>neural network</b> (a pretend brain made of numbers). It learns by <b>reading</b>. When two words show up together a lot, the link between them gets <b>stronger</b> 💪, like two friends who play together every day.</p>
+  </div>
+
+  <div class="card purple">
+    <h3>🏗️ Build a word brain!</h3>
+    <div class="row" style="margin-bottom:10px">
+      <button type="button" id="wb-one">📖 Read a sentence</button>
+      <button type="button" class="btn-pink" id="wb-ten">📚 Read 10 sentences</button>
+      <button type="button" class="btn-ghost" id="wb-reset">🧽 Wipe the brain</button>
+      <span class="stat">Sentences read: <b id="wb-count">0</b></span>
+    </div>
+    <div id="wb-sentence" class="muted">The brain is empty. No links yet! 😴</div>
+    <svg id="wb-svg" viewBox="0 0 640 430" role="img" aria-label="Word brain network"></svg>
+    <p id="wb-friends" class="big" style="margin-top:10px">👆 Click a word bubble to see its best friends.</p>
+  </div>
+
+  <div class="fact">🤯 <b>Fun fact:</b> Real AI brains have <b>billions</b> of links. These links are called <b>parameters</b> (the numbers the AI can tune). GPT-3, from 2020, had <b>175 billion</b> of them!</div>
+
+  <details class="grown"><summary>👩‍🏫 For grown-ups: what is simplified here?</summary>
+    <ul>
+      <li>Real LLMs do not store direct "word ↔ word" links. Each token becomes a vector (a long list of numbers; GPT-3 used 12,288 numbers per token). Knowledge lives in the weights between layers of artificial neurons.</li>
+      <li>The idea shown here is still true in spirit: words that appear in similar places end up with similar numbers, so the model "knows" cat is close to meow and milk.</li>
+    </ul>
+  </details>
+</section>
+
+<!-- ================= 2. TOKENS & TRANSFORMER ================= -->
+<section class="page" data-nav="🧩 Tokens & Transformer" data-say="Surprise! I don't see letters. I see numbers! Try chopping your own name 🔪">
+  <h2>🧩 Stop 2: Tokens and the Transformer</h2>
+
+  <div class="card">
+    <h3>🔪 Part A: What is a token?</h3>
+    <p>AI does not read letter by letter. It chops text into little pieces called <b>tokens</b> (the LEGO bricks of text 🧱). A token can be a whole word, part of a word, or a symbol.</p>
+    <p>Then each token gets a <b>number</b>. The AI only ever sees the numbers!</p>
+    <input id="tok-input" type="text" value="Unbelievable! My hamster eats spaghetti 🍝" aria-label="Type something to chop into tokens">
+    <div class="row" style="margin:10px 0">
+      <button type="button" id="tok-go">🔪 Chop it!</button>
+      <button type="button" class="btn-ghost" data-tok="strawberry">🍓 strawberry</button>
+      <button type="button" class="btn-ghost" data-tok="Supercalifragilisticexpialidocious">🌂 Supercalifragilistic…</button>
+      <button type="button" class="btn-ghost" data-tok="I love my dog 🐶 and 12345 cookies 🍪">🐶 dog + cookies</button>
+    </div>
+    <div class="chips" id="tok-chips"></div>
+    <div class="idline" id="tok-ids"></div>
+    <div class="row" style="margin-top:10px">
+      <span class="stat">Letters: <b id="tok-chars">0</b></span>
+      <span class="stat">Words: <b id="tok-words">0</b></span>
+      <span class="stat">Tokens: <b id="tok-count">0</b></span>
+    </div>
+    <div class="fact">🍓 <b>Why this matters:</b> Some AIs have had trouble counting the letter "r" in "strawberry". Why? They see chunks like <b>straw</b> + <b>berry</b>, not single letters!<br>📏 <b>Rule of thumb:</b> 100 tokens is about 75 English words.</div>
+    <details class="grown"><summary>👩‍🏫 For grown-ups</summary>
+      <ul>
+        <li>This chopper is a simplified imitation. Real tokenizers (for example, byte-pair encoding) learn their pieces from data, so real splits and ID numbers will differ.</li>
+        <li>The ID numbers shown here are pretend numbers made from the text. Emoji are shown as 2 pieces because real tokenizers often split an emoji into several byte pieces.</li>
+      </ul>
+    </details>
+  </div>
+
+  <div class="card blue">
+    <h3>👀 Part B: What is a Transformer?</h3>
+    <p>No, not the robot that turns into a truck! 🚚➡️🤖😂</p>
+    <p>A <b>Transformer</b> is the type of AI brain inside chatbots. Its superpower is called <b>attention</b>: every word <b>looks at all the other words</b> to work out who is important.</p>
+    <p><b>Try it:</b> click any word. The darker a word gets, the more attention it gets. Then press the swap button!</p>
+    <div class="att-words" id="att-words"></div>
+    <p id="att-say"></p>
+    <button type="button" class="btn-orange" id="att-swap">🔄 Swap the last word</button>
+  </div>
+
+  <div class="card">
+    <h3>🏭 Inside the Transformer factory</h3>
+    <p>Here is what happens when you type <b>"The cat sat on the"</b>:</p>
+    <div class="factory">
+      <div class="station" id="fs1"><div class="st-emoji">🔪</div><b>1. Chop</b><div class="muted" style="font-size:14px">Text becomes tokens</div><div class="st-out"></div></div>
+      <div class="station" id="fs2"><div class="st-emoji">🔢</div><b>2. Numbers</b><div class="muted" style="font-size:14px">Each token becomes a list of numbers</div><div class="st-out"></div></div>
+      <div class="station" id="fs3"><div class="st-emoji">👀</div><b>3. Attention floors</b><div class="muted" style="font-size:14px">Words look at each other, floor after floor</div><div class="st-out"></div></div>
+      <div class="station" id="fs4"><div class="st-emoji">🎯</div><b>4. Guess</b><div class="muted" style="font-size:14px">Score every possible next token</div><div class="st-out"></div></div>
+    </div>
+    <button type="button" class="btn-pink" id="fac-run">▶️ Run the factory</button>
+  </div>
+</section>
+
+<!-- ================= 3. GENERATING ================= -->
+<section class="page" data-nav="✍️ Writing Answers" data-say="I write ONE word at a time, super fast. Help me write a silly story! ✍️">
+  <h2>✍️ Stop 3: How Chatty writes an answer</h2>
+  <div class="card">
+    <p>Chatty does not plan the whole answer at once. It plays <b>"guess the next word"</b> again and again:</p>
+    <div class="row big" style="justify-content:center;gap:6px;margin:8px 0">📖 Read everything so far ➡️ 🤔 Score each next word ➡️ 🎯 Pick one ➡️ 🔁 Repeat!</div>
+    <p>Each bar shows how likely Chatty thinks that word is. Click a bar to choose, or let Chatty pick.</p>
+  </div>
+  <div class="card yellow">
+    <div class="storybox" id="story" aria-live="polite"></div>
+    <p id="story-think"></p>
+    <div class="bars" id="story-bars"></div>
+    <div class="row" style="margin-top:12px">
+      <button type="button" id="story-auto">🎲 Let Chatty pick</button>
+      <button type="button" class="btn-ghost" id="story-reset">🔁 Start over</button>
+    </div>
+  </div>
+  <div class="fact">🛑 <b>How does Chatty know when to stop?</b> It has a special <b>[END]</b> token. When "[END]" wins the guessing game, Chatty stops talking.</div>
+  <details class="grown"><summary>👩‍🏫 For grown-ups</summary>
+    <ul><li>Real models work with tokens, not whole phrases, and score every token in a vocabulary of tens of thousands (or more). Here each choice is a phrase to keep the story short.</li>
+    <li>In a real model, every new token depends on <i>all</i> earlier tokens. Here only the verb changes the list of objects, as a small example of that.</li></ul>
+  </details>
+</section>
+
+<!-- ================= 4. CONTEXT ================= -->
+<section class="page" data-nav="🎒 Context" data-say="My memory backpack is small! Tell me lots of things and see what I forget 🎒😅">
+  <h2>🎒 Stop 4: What is context?</h2>
+  <div class="card">
+    <p><b>Context</b> means all the words Chatty can see <b>right now</b>: your messages, its own replies, and anything else in the chat.</p>
+    <p>Context helps Chatty understand what you mean. Watch how one word can mean totally different things!</p>
+    <div class="grid" id="ctx-cards"></div>
+  </div>
+
+  <div class="card purple">
+    <h3>🎒 The memory backpack (context window)</h3>
+    <p>Chatty can only carry a certain number of tokens in its backpack. This limit is called the <b>context window</b>. In this toy, the backpack has <b>8 slots</b>. When it is full, the <b>oldest</b> message falls out 💨 and Chatty forgets it!</p>
+    <div class="row">
+      <input id="name-input" type="text" maxlength="16" placeholder="Your name" aria-label="Your name">
+      <button type="button" class="btn-blue" data-say="name">👋 My name is…</button>
+      <button type="button" class="btn-blue" data-say="dog">🐶 My dog is called Waffles</button>
+      <button type="button" class="btn-blue" data-say="food">🍕 I love pizza</button>
+      <button type="button" class="btn-blue" data-say="dino">🦖 Tell me a dino fact</button>
+      <button type="button" class="btn-blue" data-say="joke">😂 Tell me a joke</button>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <button type="button" class="btn-pink" data-say="qname">❓ What's my name?</button>
+      <button type="button" class="btn-pink" data-say="qdog">❓ What's my dog called?</button>
+      <button type="button" class="btn-pink" data-say="qfood">❓ What food do I love?</button>
+      <button type="button" class="btn-ghost" id="pack-reset">🧹 New chat</button>
+    </div>
+    <p class="packmeter" style="margin-top:12px">🎒 Backpack: <span id="pack-count">0</span> / 8 slots used</p>
+    <div class="pack" id="pack"></div>
+    <div class="chatlog" id="chatlog" aria-live="polite"></div>
+  </div>
+  <div class="fact">🤯 <b>Fun fact:</b> Real backpacks are MUCH bigger. Some AIs can hold <b>200,000 tokens</b>. That is about <b>150,000 words</b> (200,000 × 0.75), longer than most whole novels! But it still has a limit. And a new chat usually starts with an <b>empty</b> backpack, unless the app has a special memory feature.</div>
+</section>
+
+<!-- ================= 5. TEMPERATURE ================= -->
+<section class="page" data-nav="🌡️ Temperature" data-say="Turn up my temperature and watch me get SILLY! 🌡️🤪">
+  <h2>🌡️ Stop 5: What is temperature?</h2>
+  <div class="card">
+    <p><b>Temperature</b> is a dial that controls how <b>brave</b> Chatty is when picking the next word.</p>
+    <div class="grid">
+      <div class="card blue" style="margin:0">🧊 <b>Low temperature</b>: always picks the most likely word. Safe, but a bit boring.</div>
+      <div class="card orange" style="margin:0">🔥 <b>High temperature</b>: often picks surprising words. Creative… or totally bonkers!</div>
+    </div>
+    <p style="margin-top:10px">Temperature does <b>not</b> change what Chatty knows. It only changes how it picks.</p>
+  </div>
+  <div class="card yellow">
+    <div class="row" style="margin-bottom:10px">
+      <label for="temp-prompt"><b>Sentence:</b></label>
+      <select id="temp-prompt"></select>
+    </div>
+    <div class="thermo">
+      <span class="tface" id="temp-face">🙂</span>
+      <div style="flex:1;min-width:220px">
+        <label for="temp"><b>Temperature</b></label><br>
+        <input type="range" id="temp" min="0" max="2" step="0.1" value="1">
+        <div class="muted" id="temp-mood"></div>
+      </div>
+      <span class="tval" id="temp-val">1.0</span>
+    </div>
+    <p class="big" style="margin:10px 0"><b id="temp-text"></b> ___</p>
+    <div class="bars" id="temp-bars"></div>
+    <div class="row" style="margin-top:12px">
+      <button type="button" class="btn-orange" id="temp-1">🎲 Pick 1 word</button>
+      <button type="button" class="btn-pink" id="temp-10">🎲 Pick 10 times</button>
+      <button type="button" class="btn-ghost" id="temp-clear">🧹 Clear</button>
+    </div>
+    <div class="samples" id="temp-samples"></div>
+  </div>
+  <details class="grown"><summary>👩‍🏫 For grown-ups: the real maths used here 🧮</summary>
+    <ul>
+      <li>Each word has a score (a "logit"). The chance of each word is <code>e^(score ÷ T) ÷ sum of e^(every score ÷ T)</code>. This is the softmax function with temperature T.</li>
+      <li>The bars above are computed live with this formula. At T = 0 the model simply takes the highest score (called greedy decoding).</li>
+      <li>Many chatbot services let developers set temperature between 0 and 1 or 0 and 2.</li>
+    </ul>
+  </details>
+</section>
+
+<!-- ================= 6. HALLUCINATIONS ================= -->
+<section class="page" data-nav="🦄 Hallucinations" data-say="Uh-oh. Sometimes I make stuff up and I don't even know it! Can you catch me? 🕵️">
+  <h2>🦄 Stop 6: Hallucinations (when AI makes things up)</h2>
+  <div class="card">
+    <p>Remember: Chatty is a <b>word guesser</b>, not a fact checker. 🎯</p>
+    <p>When Chatty does not know something, it may still pick words that <b>sound</b> right, and say them very confidently. When an AI makes up something false, it is called a <b>hallucination</b>.</p>
+  </div>
+
+  <div class="card purple">
+    <h3>🕵️ Game: Real fact or made up?</h3>
+    <p>Chatty answered these questions. Can you spot which answers are real facts and which are hallucinations?</p>
+    <p class="score">🕵️ Detective score: <span id="hq-score">0</span> / <span id="hq-total">0</span></p>
+    <div class="quiz" id="quiz"></div>
+    <p id="quiz-end" class="big" style="margin-top:12px"></p>
+  </div>
+
+  <div class="card">
+    <h3>🤔 Why does it happen?</h3>
+    <p>Question: <b>"Who was the first person to walk on Mars?"</b></p>
+    <p>No human has been to Mars yet. But Chatty <b>must</b> pick a next word, so it looks at its word scores. Nothing is a clear winner, so it may just grab a name that sounds good:</p>
+    <div class="bars" id="why-bars"></div>
+    <p class="muted" style="margin-top:8px">(Example numbers, made up for this demo.) Newer AIs are trained to say "I'm not sure" more often. But they still make mistakes sometimes.</p>
+  </div>
+
+  <div class="card orange">
+    <h3>💥 Why hallucinations matter</h3>
+    <div class="grid">
+      <div class="card" style="margin:0">📚 <b>Homework</b><br>A made-up fact can end up in your school project.</div>
+      <div class="card" style="margin:0">🏥 <b>Health and safety</b><br>Wrong advice about medicine or safety can hurt people. Always ask a doctor or a grown-up.</div>
+      <div class="card" style="margin:0">📰 <b>Fake stories</b><br>Made-up "facts" can spread fast online and fool lots of people.</div>
+      <div class="card" style="margin:0">⚖️ <b>A real example</b><br>In 2023, two lawyers in New York were fined $5,000. An AI made up fake court cases, and they did not check them!</div>
+    </div>
+  </div>
+
+  <div class="card green">
+    <h3>🦸 Your superpower: be an AI detective!</h3>
+    <p class="big">✅ Check important facts in a book, a trusted website, or with a grown-up.<br>❓ Ask the AI "Are you sure? Where did you learn that?"<br>🧠 Remember: sounding sure is NOT the same as being right!</p>
+  </div>
+</section>
+
+<!-- ================= 7. TRAINING ================= -->
+<section class="page" data-nav="🏋️ Training" data-say="Time for AI school! Every mistake helps me learn 🏋️📚">
+  <h2>🏋️ Stop 7: How is AI trained?</h2>
+  <div class="timeline">
+    <div class="tl"><span class="n">1</span><div class="e">📚</div><b>Pre-training</b><br>Read a GIANT pile of text and play "guess the next word" billions of times.</div>
+    <div class="tl"><span class="n">2</span><div class="e">🎓</div><b>Fine-tuning</b><br>Study examples of good conversations to learn how to be a helpful chat buddy.</div>
+    <div class="tl"><span class="n">3</span><div class="e">👍</div><b>Human feedback</b><br>People pick the better of two answers. The AI learns what people like.</div>
+  </div>
+
+  <div class="card orange" style="margin-top:18px">
+    <h3>📚 Step 1: The guessing gym</h3>
+    <p>Chatty starts out knowing <b>nothing</b>. Its knobs are set badly, so it says silly things. 🙃</p>
+    <p>Each time you press <b>Train</b>: Chatty guesses ➡️ we show the right answer ➡️ Chatty turns its knobs a tiny bit so the right answer gets more likely.</p>
+    <div class="row">
+      <button type="button" class="btn-orange" id="gym-1">🏋️ Train 1 step</button>
+      <button type="button" class="btn-pink" id="gym-10">🏋️‍♀️ Train 10 steps</button>
+      <button type="button" class="btn-ghost" id="gym-reset">🔁 Forget everything</button>
+      <span class="stat">Steps: <b id="gym-steps">0</b></span>
+    </div>
+    <div class="gym" id="gym"></div>
+    <p><b>😵 Oops meter</b> (how wrong Chatty is; lower is better): <b id="gym-loss"></b></p>
+    <svg id="loss-svg" viewBox="0 0 320 130" role="img" aria-label="Oops meter chart"></svg>
+    <details class="grown"><summary>👩‍🏫 For grown-ups: the real maths used here 🧮</summary>
+      <ul>
+        <li>The "Oops meter" is the average cross-entropy loss: the average of <code>−ln(chance given to the right answer)</code>. Guessing evenly across 4 answers gives −ln(0.25) ≈ 1.39.</li>
+        <li>Each step is one step of gradient descent: every score changes by <code>−0.9 × (chance − correct)</code>, where correct is 1 for the right answer and 0 otherwise.</li>
+        <li>Real pre-training works the same way, but on trillions of tokens. For example, Meta's Llama 2 (2023) was trained on 2 trillion tokens. At about 0.75 words per token, that is about 1.5 trillion words. Reading 250 words a minute without stopping: 1.5 trillion ÷ 250 = 6 billion minutes ≈ 11,400 years.</li>
+      </ul>
+    </details>
+  </div>
+
+  <div class="card blue">
+    <h3>🎓 Step 2: Fine-tuning (learning to chat)</h3>
+    <p>After step 1, Chatty is great at continuing text, but it does not know it should <b>answer</b> you! Press the buttons to compare.</p>
+    <div class="row">
+      <button type="button" class="btn-ghost" id="ft-before">😵‍💫 Before fine-tuning</button>
+      <button type="button" class="btn-blue" id="ft-after">😇 After fine-tuning</button>
+    </div>
+    <div class="chatdemo" id="ft-demo"></div>
+  </div>
+
+  <div class="card green">
+    <h3>👍 Step 3: YOU are the teacher!</h3>
+    <p>Pick the better answer. Chatty learns from your choice. (Grown-ups call this RLHF: Reinforcement Learning from Human Feedback.)</p>
+    <div id="rl-box"></div>
+    <p style="margin-top:10px"><b>😇 Helpfulness meter</b></p>
+    <div class="meter"><span id="rl-meter"></span></div>
+  </div>
+
+  <div class="card purple">
+    <h3>🏅 You finished the trip! Here is what you learned:</h3>
+    <ol class="big" style="margin:0;padding-left:26px">
+      <li>🧠 An AI brain is a network of links that grow stronger when words appear together.</li>
+      <li>🧩 AI chops text into <b>tokens</b> and turns them into numbers. The <b>Transformer</b> uses <b>attention</b> so words can look at each other.</li>
+      <li>✍️ AI writes one token at a time by guessing the next one.</li>
+      <li>🎒 <b>Context</b> is everything the AI can see right now. The backpack has a limit!</li>
+      <li>🌡️ <b>Temperature</b> controls boring 🧊 vs. bonkers 🔥 word picking.</li>
+      <li>🦄 <b>Hallucinations</b> are confident made-up answers. Always check!</li>
+      <li>🏋️ AI is <b>trained</b> by guessing, checking, and turning its knobs, then learning from people.</li>
+    </ol>
+    <div style="text-align:center;margin-top:14px"><button type="button" class="btn-pink" id="badge" style="font-size:22px">🏅 Claim my AI Explorer badge!</button></div>
+  </div>
+</section>
+</main>
+
+<div class="pager">
+  <button type="button" class="btn-ghost" id="back">⬅️ Back</button>
+  <span id="stopnum"></span>
+  <button type="button" id="next">Next stop ➡️</button>
+</div>
+</div>
+
+<script>
+/* ---------------- helpers ---------------- */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const rand = a => a[Math.floor(Math.random() * a.length)];
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+function pickWeighted(w) {
+  const total = w.reduce((a, b) => a + b, 0);
+  let r = Math.random() * total;
+  for (let i = 0; i < w.length; i++) { r -= w[i]; if (r < 0) return i; }
+  return w.length - 1;
+}
+// softmax with temperature; T = 0 means greedy (all chance on the top score)
+function softmax(z, T = 1) {
+  if (T === 0) { const m = z.indexOf(Math.max(...z)); return z.map((_, i) => i === m ? 1 : 0); }
+  const m = Math.max(...z);
+  const e = z.map(v => Math.exp((v - m) / T));
+  const s = e.reduce((a, b) => a + b, 0);
+  return e.map(v => v / s);
+}
+function fmtPct(p) {
+  const v = p * 100;
+  if (v === 0) return '0%';
+  if (v < 0.1) return '<0.1%';
+  return v >= 10 ? Math.round(v) + '%' : v.toFixed(1) + '%';
+}
+function burst(el, emojis = ['🎉','⭐','✨','🎊','💖','🤖']) {
+  const r = el.getBoundingClientRect();
+  for (let i = 0; i < 16; i++) {
+    const s = document.createElement('span');
+    s.className = 'burst';
+    s.textContent = rand(emojis);
+    s.style.left = (r.left + r.width / 2) + 'px';
+    s.style.top = (r.top + r.height / 2) + 'px';
+    s.style.setProperty('--dx', (Math.random() * 320 - 160) + 'px');
+    s.style.setProperty('--dy', (-Math.random() * 260 - 40) + 'px');
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 1300);
+  }
+}
+function renderBars(box, labels, probs, { onPick, highlight } = {}) {
+  box.innerHTML = '';
+  labels.forEach((label, i) => {
+    const row = document.createElement(onPick ? 'button' : 'div');
+    row.className = 'bar-row' + (highlight === i ? ' hl' : '');
+    if (onPick) { row.type = 'button'; row.onclick = () => onPick(i); }
+    row.innerHTML = `<span class="bar-label">${esc(label)}</span><span class="bar-track"><span class="bar-fill" style="width:${(probs[i] * 100).toFixed(1)}%"></span></span><span class="bar-pct">${fmtPct(probs[i])}</span>`;
+    box.appendChild(row);
+  });
+}
+
+/* ---------------- Chatty + navigation ---------------- */
+const JOKES = [
+  'Why was the robot so tired? It had a hard drive! 💾😴',
+  'How do robots eat guacamole? With computer chips! 🥑🍟',
+  'Why did the computer go to the doctor? It had a virus! 🤒💻',
+  'Why did the robot cross the road? Because it was programmed to! 🐔🤖',
+  "What's a robot's favourite music? Heavy metal! 🎸🤘",
+  'Why did the robot go on holiday? To recharge its batteries! 🔋🏖️',
+  'What do you call a robot that takes the long way? R2-Detour! 🛣️',
+  'Why was the maths book sad? It had too many problems! 📘😢',
+  'Knock knock! Who\'s there? AI. AI who? AI just told you a joke! 🤖😂',
+];
+function say(text) { $('#say').textContent = text; }
+$('#bot').onclick = () => {
+  const b = $('#bot'); b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake');
+  say(rand(JOKES));
+};
+
+const pages = $$('.page');
+const nav = $('#stops');
+const visited = new Set();
+let cur = 0;
+pages.forEach((p, i) => {
+  const b = document.createElement('button');
+  b.type = 'button'; b.textContent = p.dataset.nav; b.onclick = () => go(i);
+  nav.appendChild(b);
+});
+function go(i) {
+  i = Math.max(0, Math.min(pages.length - 1, i));
+  visited.add(cur);
+  cur = i;
+  pages.forEach((p, j) => p.classList.toggle('on', j === i));
+  [...nav.children].forEach((b, j) => { b.classList.toggle('on', j === i); b.classList.toggle('done', visited.has(j) && j !== i && j !== 0); });
+  $('#back').disabled = i === 0;
+  $('#next').textContent = i === pages.length - 1 ? '🏁 Back to start' : 'Next stop ➡️';
+  $('#stopnum').textContent = i === 0 ? 'Start' : `Stop ${i} of ${pages.length - 1}`;
+  say(pages[i].dataset.say);
+  nav.children[i].scrollIntoView({ block: 'nearest', inline: 'center' });
+  try { history.replaceState(null, '', '#stop' + i); } catch (e) {}
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (i === 1) wbDraw(); // redraw so layout is correct once visible
+}
+$('#back').onclick = () => go(cur - 1);
+$('#next').onclick = () => go(cur === pages.length - 1 ? 0 : cur + 1);
+
+/* ---------------- START page ---------------- */
+const WARM = [['Peanut butter and', 'jelly 🍇'], ['Twinkle, twinkle, little', 'star ⭐'], ['Once upon a', 'time ⏰'], ['Happy birthday to', 'you 🎂']];
+let warmShown = 0;
+WARM.forEach(([a, b]) => {
+  const d = document.createElement('button');
+  d.type = 'button'; d.className = 'guess'; d.style.color = 'var(--ink)';
+  d.innerHTML = `${esc(a)} <span class="blank">&nbsp;</span>`;
+  d.onclick = () => {
+    const bl = $('.blank', d);
+    if (bl.classList.contains('show')) return;
+    bl.classList.add('show'); bl.textContent = b; warmShown++;
+    if (warmShown === WARM.length) {
+      $('#warmup-msg').innerHTML = '🎉 <b>You just did what an AI does!</b> An LLM is a SUPER-DUPER <b>next-word guesser</b>. It learned by reading tons and tons of text. Let\'s find out how! 👇';
+      burst(d);
+    }
+  };
+  $('#warmup').appendChild(d);
+});
+pages.slice(1).forEach((p, k) => {
+  const [e, ...rest] = p.dataset.nav.split(' ');
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = 'mapstop';
+  b.innerHTML = `<span class="e">${e}</span><span><small class="muted">Stop ${k + 1}</small><br>${esc(rest.join(' '))}</span>`;
+  b.onclick = () => go(k + 1);
+  $('#map').appendChild(b);
+});
+
+/* ---------------- 1. WORD BRAIN ---------------- */
+const WB = {
+  nodes: {
+    cat: { e: '🐱', x: 170, y: 150 }, meow: { e: '🎵', x: 60, y: 60 }, milk: { e: '🥛', x: 300, y: 60 },
+    dog: { e: '🐶', x: 170, y: 320 }, woof: { e: '📢', x: 60, y: 360 }, bone: { e: '🦴', x: 300, y: 365 },
+    mouse: { e: '🐭', x: 315, y: 215 }, cheese: { e: '🧀', x: 455, y: 205 }, pizza: { e: '🍕', x: 455, y: 345 },
+    moon: { e: '🌙', x: 480, y: 65 }, star: { e: '⭐', x: 595, y: 160 }, rocket: { e: '🚀', x: 590, y: 320 },
+  },
+  sentences: [
+    ['The cat says meow! 😺', ['cat', 'meow']],
+    ['The dog says woof! 🐶', ['dog', 'woof']],
+    ['The cat drinks milk. 🥛', ['cat', 'milk']],
+    ['The dog chews a bone. 🦴', ['dog', 'bone']],
+    ['The cat chases the mouse! 🐭💨', ['cat', 'mouse']],
+    ['The mouse nibbles the cheese. 🧀', ['mouse', 'cheese']],
+    ['Pizza is covered in cheese! 🍕', ['pizza', 'cheese']],
+    ['The rocket flies to the moon. 🚀', ['rocket', 'moon']],
+    ['The moon and the stars shine at night. ✨', ['moon', 'star']],
+    ['The cat says meow meow MEOW!!', ['cat', 'meow']],
+    ['The silly mouse thinks the moon is made of cheese. 🌝', ['mouse', 'moon', 'cheese']],
+    ['The dog chases the cat! 🐕💨🐈', ['dog', 'cat']],
+    ['The rocket zooms past a star. 🌟', ['rocket', 'star']],
+    ['The dog says woof at the postman. 📬', ['dog', 'woof']],
+    ['OH NO! My dog ate my pizza! 😱', ['dog', 'pizza']],
+    ['The cat spilled the milk. Oops!', ['cat', 'milk']],
+    ['The dog buried a bone in the garden.', ['dog', 'bone']],
+    ['A cheese pizza for dinner! 😋', ['pizza', 'cheese']],
+    ['The cow jumped over the moon… wait, it was the CAT?! 🐈🌙', ['cat', 'moon']],
+    ['The cat sat down and said meow.', ['cat', 'meow']],
+  ],
+  w: {}, read: 0, sel: null, lit: [], busy: false,
+};
+const wkey = (a, b) => a < b ? a + '|' + b : b + '|' + a;
+function wbDraw(flash = []) {
+  let h = '';
+  for (const [k, w] of Object.entries(WB.w)) {
+    const [a, b] = k.split('|');
+    const A = WB.nodes[a], B = WB.nodes[b];
+    const on = WB.sel && (a === WB.sel || b === WB.sel);
+    const cls = ['edge', flash.includes(k) ? 'flash' : '', WB.sel && !on ? 'dim' : '', on ? 'on' : ''].join(' ');
+    h += `<line class="${cls}" x1="${A.x}" y1="${A.y}" x2="${B.x}" y2="${B.y}" stroke-width="${Math.min(2 + w * 2.4, 18)}"/>`;
+  }
+  for (const [id, n] of Object.entries(WB.nodes)) {
+    const cls = ['node', WB.sel === id ? 'sel' : '', WB.lit.includes(id) ? 'lit' : ''].join(' ');
+    h += `<g class="${cls}" data-id="${id}" transform="translate(${n.x},${n.y})" tabindex="0" role="button" aria-label="${id}"><circle r="30"/><text class="em" y="10" text-anchor="middle">${n.e}</text><text class="lbl" y="50" text-anchor="middle">${id}</text></g>`;
+  }
+  $('#wb-svg').innerHTML = h;
+}
+function wbFriends() {
+  const el = $('#wb-friends');
+  if (!WB.sel) { el.textContent = '👆 Click a word bubble to see its best friends.'; return; }
+  const n = WB.nodes[WB.sel];
+  const list = Object.entries(WB.w).filter(([k]) => k.split('|').includes(WB.sel))
+    .map(([k, w]) => [k.split('|').find(x => x !== WB.sel), w]).sort((a, b) => b[1] - a[1]);
+  if (!list.length) { el.innerHTML = `${n.e} <b>${WB.sel}</b> has no friends yet 😢 Read some sentences!`; return; }
+  el.innerHTML = `${n.e} <b>${WB.sel}</b>'s best friends: ` + list.map(([f, w]) =>
+    `<span class="stat" style="display:inline-block;margin:3px">${WB.nodes[f].e} ${f} ${'💪'.repeat(Math.min(w, 5))}${w > 5 ? '+' : ''} <small>(${w})</small></span>`).join(' ');
+}
+function wbReadOne() {
+  const [text, words] = WB.sentences[WB.read % WB.sentences.length];
+  WB.read++;
+  const flash = [];
+  for (let i = 0; i < words.length; i++) for (let j = i + 1; j < words.length; j++) {
+    const k = wkey(words[i], words[j]);
+    WB.w[k] = (WB.w[k] || 0) + 1; flash.push(k);
+  }
+  WB.lit = words;
+  $('#wb-sentence').innerHTML = `📖 “${esc(text)}”<small>💪 Stronger link: ${flash.map(k => k.replace('|', ' ↔ ')).join(', ')}</small>`;
+  $('#wb-sentence').classList.remove('muted');
+  $('#wb-count').textContent = WB.read;
+  wbDraw(flash); wbFriends();
+}
+$('#wb-one').onclick = () => { if (!WB.busy) wbReadOne(); };
+$('#wb-ten').onclick = async () => {
+  if (WB.busy) return;
+  WB.busy = true; $('#wb-one').disabled = $('#wb-ten').disabled = true;
+  for (let i = 0; i < 10; i++) { wbReadOne(); await sleep(450); }
+  WB.busy = false; $('#wb-one').disabled = $('#wb-ten').disabled = false;
+  say('Wow, my brain is growing! Click "cat" to see who it hangs out with 🐱');
+};
+$('#wb-reset').onclick = () => {
+  if (WB.busy) return;
+  WB.w = {}; WB.read = 0; WB.sel = null; WB.lit = [];
+  $('#wb-count').textContent = 0;
+  $('#wb-sentence').textContent = 'The brain is empty. No links yet! 😴';
+  $('#wb-sentence').classList.add('muted');
+  wbDraw(); wbFriends();
+};
+function wbSelect(id) { WB.sel = WB.sel === id ? null : id; wbDraw(); wbFriends(); }
+$('#wb-svg').addEventListener('click', e => { const g = e.target.closest('.node'); if (g) wbSelect(g.dataset.id); });
+$('#wb-svg').addEventListener('keydown', e => {
+  const g = e.target.closest('.node');
+  if (g && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); wbSelect(g.dataset.id); }
+});
+wbDraw();
+
+/* ---------------- 2a. TOKENS ---------------- */
+const COMMON = new Set(('the a an and or but is are was were be i you he she it we they my your his her our their to of in on at for with ' +
+  'this that what who how why yes no not so up down go went me hello hi day time cat dog eat eats ate love like likes very big small ' +
+  'good bad can do does fun play home book school friend happy sad sun moon star pizza cake apple straw berry cookie cookies').split(' '));
+const PRE = ['super', 'over', 'dis', 'pre', 'un', 're'];
+const SUF = ['able', 'tion', 'ness', 'ment', 'ing', 'ful', 'less', 'est', 'ed', 'ly', 'er', 's'];
+function chopWord(w) {
+  const low = w.toLowerCase();
+  if (w.length <= 4 || COMMON.has(low)) return [w];
+  const pieces = [];
+  let start = 0, end = w.length, suffix = null;
+  for (const p of PRE) if (low.startsWith(p) && low.length - p.length >= 4) { pieces.push(w.slice(0, p.length)); start = p.length; break; }
+  for (const s of SUF) if (low.endsWith(s) && end - start - s.length >= 3) { suffix = w.slice(end - s.length); end -= s.length; break; }
+  const mid = w.slice(start, end);
+  const midLow = mid.toLowerCase();
+  // try splitting into two common words (e.g. straw + berry)
+  let split = -1;
+  for (let i = 3; i <= midLow.length - 3; i++) if (COMMON.has(midLow.slice(0, i)) && COMMON.has(midLow.slice(i))) { split = i; break; }
+  if (split > 0) pieces.push(mid.slice(0, split), mid.slice(split));
+  else if (mid.length <= 5 || COMMON.has(midLow)) pieces.push(mid);
+  else {
+    const n = Math.ceil(mid.length / 5), size = Math.ceil(mid.length / n);
+    for (let i = 0; i < mid.length; i += size) pieces.push(mid.slice(i, i + size));
+  }
+  if (suffix) pieces.push(suffix);
+  return pieces;
+}
+function tokenize(text) {
+  const out = [];
+  const re = /[A-Za-z']+|\d+|\p{Extended_Pictographic}(?:️|‍\p{Extended_Pictographic})*|[^\sA-Za-z\d]/gu;
+  for (const m of text.matchAll(re)) {
+    const t = m[0];
+    if (/^[A-Za-z']+$/.test(t)) chopWord(t).forEach(p => out.push({ t: p }));
+    else if (/^\d+$/.test(t)) for (let i = 0; i < t.length; i += 3) out.push({ t: t.slice(i, i + 3) });
+    else if (/\p{Extended_Pictographic}/u.test(t)) { out.push({ t, byte: '1/2' }); out.push({ t, byte: '2/2' }); }
+    else out.push({ t });
+  }
+  return out;
+}
+function fakeId(s) { let h = 5381; for (const c of s) h = ((h * 33) ^ c.codePointAt(0)) >>> 0; return h % 50000; }
+const TOK_COLORS = ['#fde68a', '#bbf7d0', '#bfdbfe', '#fbcfe8', '#ddd6fe', '#fed7aa', '#a5f3fc'];
+function runTokens() {
+  const text = $('#tok-input').value.slice(0, 200);
+  const toks = tokenize(text);
+  const box = $('#tok-chips'); box.innerHTML = '';
+  const ids = [];
+  toks.forEach((tk, i) => {
+    const id = fakeId(tk.t + (tk.byte || ''));
+    ids.push(id);
+    const c = document.createElement('span');
+    c.className = 'chip' + (tk.byte ? ' byte' : '');
+    c.style.background = TOK_COLORS[i % TOK_COLORS.length];
+    c.style.animationDelay = (i * 60) + 'ms';
+    c.title = tk.byte ? 'Emoji are often split into byte pieces' : '';
+    c.innerHTML = `<span></span><small>#${id}${tk.byte ? ' · piece ' + tk.byte : ''}</small>`;
+    c.firstChild.textContent = tk.t;
+    box.appendChild(c);
+  });
+  $('#tok-ids').textContent = '🤖 What Chatty really sees: [' + ids.join(', ') + ']';
+  $('#tok-chars').textContent = [...text].length;
+  $('#tok-words').textContent = (text.match(/[A-Za-z']+|\d+/g) || []).length;
+  $('#tok-count').textContent = toks.length;
+}
+$('#tok-go').onclick = runTokens;
+$('#tok-input').addEventListener('keydown', e => { if (e.key === 'Enter') runTokens(); });
+$$('[data-tok]').forEach(b => b.onclick = () => { $('#tok-input').value = b.dataset.tok; runTokens(); });
+runTokens();
+
+/* ---------------- 2b. ATTENTION ---------------- */
+const ATT = {
+  hungry: {
+    words: ['The', 'monkey', 'ate', 'the', 'banana', 'because', 'it', 'was', 'hungry'],
+    special: { 6: { 1: 8, 4: 2, 8: 3, 6: 1 }, 8: { 1: 6, 6: 4, 7: 1, 8: 1 }, 2: { 1: 5, 4: 5, 2: 1 }, 1: { 2: 4, 8: 2, 1: 2 }, 4: { 2: 5, 4: 2, 1: 1 } },
+    it: '“it” looks mostly at “monkey” 🐒, because bananas don\'t get hungry! 😂',
+  },
+  yummy: {
+    words: ['The', 'monkey', 'ate', 'the', 'banana', 'because', 'it', 'was', 'yummy'],
+    special: { 6: { 4: 8, 1: 2, 8: 3, 6: 1 }, 8: { 4: 6, 6: 4, 7: 1, 8: 1 }, 2: { 1: 5, 4: 5, 2: 1 }, 1: { 2: 4, 1: 2 }, 4: { 2: 4, 8: 3, 4: 2 } },
+    it: '“it” now looks mostly at “banana” 🍌, because monkeys aren\'t yummy! 🙈',
+  },
+};
+let attSet = 'hungry', attSel = 6;
+function attWeights(set, i) {
+  const n = set.words.length, sp = set.special[i];
+  const w = Array.from({ length: n }, (_, j) => sp ? (sp[j] ?? 0.3) : (j === i ? 3 : Math.abs(j - i) === 1 ? 1.5 : 0.3));
+  const s = w.reduce((a, b) => a + b, 0);
+  return w.map(v => v / s);
+}
+function attRender() {
+  const set = ATT[attSet], w = attWeights(set, attSel);
+  const mx = Math.max(...w), top = w.indexOf(mx);
+  const box = $('#att-words'); box.innerHTML = '';
+  set.words.forEach((word, j) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'att-w' + (j === attSel ? ' me' : '');
+    const a = w[j] / mx;
+    b.style.background = `rgba(124,58,237,${(0.08 + a * 0.85).toFixed(2)})`;
+    b.style.color = a > 0.5 ? '#fff' : 'var(--ink)';
+    b.innerHTML = `${j === top ? '<span class="eyes">👀</span>' : ''}<span>${esc(word)}</span><span class="pct">${Math.round(w[j] * 100)}%</span>`;
+    b.onclick = () => { attSel = j; attRender(); };
+    box.appendChild(b);
+  });
+  $('#att-say').textContent = attSel === 6 ? set.it : `“${set.words[attSel]}” pays the most attention to “${set.words[top]}”.`;
+}
+$('#att-swap').onclick = () => {
+  attSet = attSet === 'hungry' ? 'yummy' : 'hungry'; attSel = 6; attRender();
+  say('See? Change ONE word and "it" looks somewhere else. That\'s attention! 👀');
+};
+attRender();
+
+/* ---------------- 2c. FACTORY ---------------- */
+const TEMP_SETS = [
+  { prompt: 'The cat sat on the', opts: [['mat 🧶', 4.0], ['sofa 🛋️', 3.3], ['keyboard ⌨️', 2.8], ['homework 📄', 1.8], ['pizza 🍕', 0.8], ['dragon 🐉', 0.2], ['spaghetti volcano 🌋', -0.6]] },
+  { prompt: 'For breakfast, I ate', opts: [['cereal 🥣', 4.0], ['toast 🍞', 3.6], ['pancakes 🥞', 3.2], ['ice cream 🍦', 1.6], ['a shoe 👟', 0.0], ['the moon 🌙', -0.8]] },
+  { prompt: 'My teacher is a', opts: [['hero 🦸', 3.4], ['genius 🧠', 3.0], ['superstar 🌟', 2.7], ['robot 🤖', 1.2], ['secret ninja 🥷', 0.8], ['giant potato 🥔', -0.5]] },
+];
+let facBusy = false;
+$('#fac-run').onclick = async () => {
+  if (facBusy) return;
+  facBusy = true; $('#fac-run').disabled = true;
+  const st = [1, 2, 3, 4].map(n => $('#fs' + n));
+  st.forEach(s => { s.classList.remove('active'); $('.st-out', s).innerHTML = ''; });
+  const toks = ['The', 'cat', 'sat', 'on', 'the'];
+  st[0].classList.add('active');
+  $('.st-out', st[0]).innerHTML = toks.map((t, i) => `<span class="chip" style="background:${TOK_COLORS[i]};padding:2px 8px;animation-delay:${i * 120}ms">${t}</span>`).join(' ');
+  await sleep(1300); st[0].classList.remove('active');
+  st[1].classList.add('active');
+  $('.st-out', st[1]).innerHTML = '“cat” ➡️ [0.8, −0.3, 1.2, 0.1, …]<br><small class="muted">(pretend numbers; real lists have thousands)</small>';
+  await sleep(1500); st[1].classList.remove('active');
+  st[2].classList.add('active');
+  const out3 = $('.st-out', st[2]);
+  for (let f = 1; f <= 96; f += (f < 5 ? 1 : 13)) { out3.innerHTML = `🏢 Floor ${f} 👀`; await sleep(180); }
+  out3.innerHTML = '🏢 Floor 96 👀 done!<br><small class="muted">GPT-3 had 96 floors (layers)</small>';
+  await sleep(900); st[2].classList.remove('active');
+  st[3].classList.add('active');
+  const set = TEMP_SETS[0], p = softmax(set.opts.map(o => o[1]), 1);
+  $('.st-out', st[3]).innerHTML = set.opts.slice(0, 3).map((o, i) => `${o[0]} <b>${fmtPct(p[i])}</b>`).join('<br>') + '<br>…';
+  burst(st[3], ['🧶', '🐱', '🎯']);
+  say('The winner is… "mat"! 🧶 But "keyboard" was close. Cats DO love keyboards 😹');
+  facBusy = false; $('#fac-run').disabled = false;
+};
+
+/* ---------------- 3. STORY ---------------- */
+const STORY = {
+  subject: [['dragon 🐉', 40], ['princess 👸', 25], ['potato 🥔', 20], ['grandma 👵', 15]],
+  verb: [['ate', 35, 'ate'], ['danced with', 30, 'danced'], ['sneezed on', 20, 'sneezed'], ['burped at', 15, 'burped']],
+  object: {
+    ate: [['a whole pizza 🍕', 45], ['a fluffy cloud ☁️', 25], ['the homework 📄', 20], ['a stinky sock 🧦', 10]],
+    danced: [['a penguin 🐧', 40], ['a broom 🧹', 30], ['the moon 🌙', 20], ['a grumpy cactus 🌵', 10]],
+    sneezed: [['the king 👑', 40], ['a birthday cake 🎂', 35], ['a sleepy cat 😾', 25]],
+    burped: [['a volcano 🌋', 40], ['the teacher 👩‍🏫', 35], ['a tiny ant 🐜', 25]],
+  },
+  ending: [['and they all lived happily ever after. 🌈', 50], ['and everyone laughed for 100 years. 😂', 30], ['and it was on the news. 📺', 20]],
+  stop: [['🛑 [END]', 88, 'end'], ['P.S. …', 12, 'ps']],
+  last: [['🛑 [END]', 100, 'end']],
+};
+const S = { stage: 0, parts: [], verbKey: null, done: false, busy: false };
+function storyOptions() {
+  return [STORY.subject, STORY.verb, STORY.object[S.verbKey], STORY.ending, STORY.stop, STORY.last][S.stage];
+}
+function storyRender(newIdx = -1) {
+  const parts = S.parts.map((p, i) => i === newIdx ? `<span class="new">${esc(p)}</span>` : esc(p));
+  $('#story').innerHTML = 'Once upon a time, a ' + parts.join(' ') + (S.done ? '' : ' <span class="muted">▌</span>');
+  if (S.done) {
+    $('#story-think').innerHTML = '🛑 <b>[END]</b> won, so Chatty stops writing. The end! 🎬';
+    $('#story-bars').innerHTML = '';
+    $('#story-auto').disabled = true;
+    return;
+  }
+  $('#story-auto').disabled = false;
+  const opts = storyOptions();
+  const tot = opts.reduce((a, o) => a + o[1], 0);
+  $('#story-think').textContent = `Step ${S.parts.length + 1}: 📖 Chatty re-reads the whole story, then scores what could come next 🤔`;
+  renderBars($('#story-bars'), opts.map(o => o[0]), opts.map(o => o[1] / tot), { onPick: storyPick });
+}
+function storyPick(i) {
+  if (S.done || S.busy) return;
+  const o = storyOptions()[i];
+  if (S.stage === 1) S.verbKey = o[2];
+  if (o[2] === 'end') { S.done = true; storyRender(); burst($('#story'), ['📖', '🎉', '✨', '😂']); return; }
+  if (o[2] === 'ps') { S.parts.push('P.S. A frog saw the whole thing. 🐸'); S.stage = 5; storyRender(S.parts.length - 1); return; }
+  S.parts.push(o[0]); S.stage++;
+  storyRender(S.parts.length - 1);
+}
+$('#story-auto').onclick = async () => {
+  if (S.done || S.busy) return;
+  const opts = storyOptions();
+  const i = pickWeighted(opts.map(o => o[1]));
+  S.busy = true;
+  const rows = $$('.bar-row', $('#story-bars'));
+  rows[i].classList.add('hl');
+  await sleep(500);
+  S.busy = false;
+  storyPick(i);
+};
+$('#story-reset').onclick = () => { Object.assign(S, { stage: 0, parts: [], verbKey: null, done: false }); storyRender(); };
+storyRender();
+
+/* ---------------- 4. CONTEXT ---------------- */
+const CTX = [
+  { word: 'bat', ctxs: [['🦉 At the zoo at night, I saw a', '🦇', 'bat flapping its wings!'], ['⚾ At baseball practice, I swung the', '⚾', 'bat and hit the ball!']] },
+  { word: 'mouse', ctxs: [['🧀 In the kitchen, the cat chased a', '🐭', 'mouse that squeaked!'], ['💻 To open the game, I clicked the', '🖱️', 'mouse on my computer!']] },
+  { word: 'star', ctxs: [['🔭 Up in the dark night sky, I saw a', '⭐', 'star twinkling!'], ['🎬 At the movie premiere, we met a famous', '🌟', 'star who signed my hat!']] },
+];
+CTX.forEach(c => {
+  const card = document.createElement('div');
+  card.className = 'card yellow ctxcard'; card.style.margin = '0';
+  card.innerHTML = `<h3>What does “${c.word}” mean?</h3><div class="row"></div><div class="out muted">Pick a context 👆</div>`;
+  c.ctxs.forEach(([ctx, emo, rest], k) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = k ? 'btn-teal' : 'btn-blue'; b.style.fontSize = '15px';
+    b.textContent = ctx.split(' ')[0] + ' Context ' + (k + 1);
+    b.onclick = () => {
+      const out = $('.out', card);
+      out.classList.remove('muted');
+      out.innerHTML = `<span class="muted">${esc(ctx)}…</span><br><span class="emo">${emo}</span> <b>${esc(rest)}</b>`;
+    };
+    $('.row', card).appendChild(b);
+  });
+  $('#ctx-cards').appendChild(card);
+});
+
+const PACK = 8;
+let msgs = [];
+const SILLY_NAMES = ['Sir Wigglebottom 🤴', 'Captain Noodle 🍜', 'Banana Pants 🍌', 'Princess Pickle 🥒', 'Mr. Potato 🥔'];
+const SILLY_DOGS = ['Mr. Fluffernutter 🐩', 'Sausage 🌭', 'Professor Barkington 🎓'];
+const SILLY_FOOD = ['broccoli ice cream 🥦🍦', 'spicy jelly beans 🌶️', 'mud pies 🥧'];
+function packWindow() { return msgs.slice(-PACK); }
+function recall(tag) {
+  const m = packWindow().find(x => x.who === 'you' && x.tag === tag);
+  return m ? m.val : null;
+}
+function addMsg(who, text, tag, val) { msgs.push({ who, text, tag, val }); }
+function chatSay(kind) {
+  const name = ($('#name-input').value.trim() || 'Sam').slice(0, 16);
+  switch (kind) {
+    case 'name': addMsg('you', `My name is ${name}.`, 'name', name); addMsg('bot', `Nice to meet you, ${name}! 🤝`); break;
+    case 'dog': addMsg('you', 'My dog is called Waffles.', 'dog', 'Waffles 🐶'); addMsg('bot', 'Waffles! What a tasty name! 🧇🐶'); break;
+    case 'food': addMsg('you', 'I love pizza!', 'food', 'pizza 🍕'); addMsg('bot', 'Pizza is the best! 🍕😋'); break;
+    case 'dino': addMsg('you', 'Tell me a dino fact!'); addMsg('bot', 'T. rex had teeth about as big as bananas! 🦖🍌'); break;
+    case 'joke': addMsg('you', 'Tell me a joke!'); addMsg('bot', rand(JOKES)); break;
+    case 'qname': case 'qdog': case 'qfood': {
+      const tag = kind.slice(1);
+      const q = { name: "What's my name?", dog: "What's my dog called?", food: 'What food do I love?' }[tag];
+      addMsg('you', q); // the question goes into the backpack first, like in a real chat
+      const v = recall(tag);
+      if (v) addMsg('bot', { name: `Your name is ${v}! 😊 It's still in my backpack 🎒`, dog: `Your dog is ${v}! 🎒✅`, food: `You love ${v}! 🎒✅` }[tag]);
+      else addMsg('bot', { name: `Hmm… is it ${rand(SILLY_NAMES)}? 🤔`, dog: `Umm… ${rand(SILLY_DOGS)}? 🤔`, food: `Is it… ${rand(SILLY_FOOD)}? 🤔` }[tag] + ' (Oops, that fell out of my backpack, so I guessed!)');
+      break;
+    }
+  }
+  chatRender();
+}
+function chatRender() {
+  const inWin = Math.max(0, msgs.length - PACK);
+  const log = $('#chatlog'); log.innerHTML = '';
+  if (!msgs.length) log.innerHTML = '<span class="muted">💬 Press the buttons above to chat with Chatty!</span>';
+  msgs.forEach((m, i) => {
+    const d = document.createElement('div');
+    d.className = 'msg ' + m.who + (i < inWin ? ' gone' : '');
+    d.innerHTML = `<span class="t"></span>${i < inWin ? '<span class="gone-tag">💨 forgotten</span>' : ''}`;
+    $('.t', d).textContent = (m.who === 'you' ? '🧒 ' : '🤖 ') + m.text;
+    log.appendChild(d);
+  });
+  log.scrollTop = log.scrollHeight;
+  const win = packWindow();
+  const pack = $('#pack'); pack.innerHTML = '';
+  for (let i = 0; i < PACK; i++) {
+    const s = document.createElement('div');
+    const m = win[i];
+    s.className = 'slot' + (m ? ' full ' + m.who : '');
+    s.textContent = m ? (m.who === 'you' ? '🧒 ' : '🤖 ') + (m.text.length > 34 ? m.text.slice(0, 32) + '…' : m.text) : 'empty';
+    pack.appendChild(s);
+  }
+  $('#pack-count').textContent = win.length;
+}
+$$('[data-say]').forEach(b => { if (b.tagName === 'BUTTON') b.onclick = () => chatSay(b.dataset.say); });
+$('#pack-reset').onclick = () => { msgs = []; chatRender(); };
+chatRender();
+
+/* ---------------- 5. TEMPERATURE ---------------- */
+TEMP_SETS.forEach((t, i) => { const o = document.createElement('option'); o.value = i; o.textContent = t.prompt + ' ___'; $('#temp-prompt').appendChild(o); });
+function tempNow() { return Math.round(parseFloat($('#temp').value) * 10) / 10; }
+function tempProbs() { const set = TEMP_SETS[+$('#temp-prompt').value]; return softmax(set.opts.map(o => o[1]), tempNow()); }
+function tempRender() {
+  const T = tempNow(), set = TEMP_SETS[+$('#temp-prompt').value];
+  $('#temp-val').textContent = T.toFixed(1);
+  $('#temp-text').textContent = set.prompt;
+  const [face, mood] = T === 0 ? ['🥱', 'Frozen! Always picks the top word. Snore…'] : T < 0.5 ? ['😐', 'Cool and careful. Safe but a bit boring.'] :
+    T <= 1.0 ? ['🙂', 'Just right! Sensible with a little surprise.'] : T <= 1.5 ? ['😜', 'Getting hot… and silly!'] : ['🤪', 'SUPER HOT! Total chaos mode! 🔥'];
+  $('#temp-face').textContent = face; $('#temp-mood').textContent = mood;
+  renderBars($('#temp-bars'), set.opts.map(o => o[0]), tempProbs());
+}
+function tempPick(n) {
+  const set = TEMP_SETS[+$('#temp-prompt').value], p = tempProbs();
+  for (let k = 0; k < n; k++) {
+    const i = pickWeighted(p);
+    const s = document.createElement('span');
+    s.className = 'sample'; s.style.animationDelay = (k * 60) + 'ms';
+    s.textContent = `🌡️${tempNow().toFixed(1)}: …${set.opts[i][0]}`;
+    $('#temp-samples').prepend(s);
+  }
+}
+$('#temp').addEventListener('input', tempRender);
+$('#temp-prompt').addEventListener('change', () => { $('#temp-samples').innerHTML = ''; tempRender(); });
+$('#temp-1').onclick = () => tempPick(1);
+$('#temp-10').onclick = () => tempPick(10);
+$('#temp-clear').onclick = () => { $('#temp-samples').innerHTML = ''; };
+tempRender();
+
+/* ---------------- 6. HALLUCINATIONS ---------------- */
+const QUIZ = [
+  { q: 'How many legs does a spider have?', a: 'A spider has 8 legs! 🕷️', real: true, why: 'Real! Spiders have 8 legs.' },
+  { q: 'Who was the first person to walk on Mars?', a: 'Captain Zara Moonboots walked on Mars in 1998! 🚀👢', real: false, why: 'Made up! No human has walked on Mars yet.' },
+  { q: 'Is the Sun a star?', a: 'Yes! The Sun is a star. ☀️⭐', real: true, why: 'Real! The Sun is the closest star to Earth.' },
+  { q: 'What did I eat for breakfast today?', a: 'You ate 3 pancakes with ketchup! 🥞🍅', real: false, why: 'Made up! Chatty cannot see you. It just guessed words that sound like a breakfast.' },
+  { q: 'How many eyes does a honeybee have?', a: 'A honeybee has 5 eyes! 🐝', real: true, why: 'Real, even though it sounds silly! Bees have 2 big eyes and 3 tiny ones on top of the head. Weird-sounding does not mean fake. That is why we check!' },
+  { q: 'Tell me about the book "The Hamster Who Ate New York".', a: 'It is a famous 1962 book by Dr. Seuss about Harold the hungry hamster! 🐹🗽', real: false, why: 'Made up! Dr. Seuss did not write this book. Chatty mixed together words that "sound like" a real book.' },
+  { q: 'What is the capital city of France?', a: 'The capital of France is Paris! 🗼', real: true, why: 'Real! Paris is the capital of France.' },
+  { q: 'Who invented the trampoline?', a: 'Pharaoh Bouncy-Tut in ancient Egypt, 3000 years ago! 🤸🏺', real: false, why: 'Made up! The modern trampoline was built in the 1930s, not in ancient Egypt.' },
+];
+let hqScore = 0, hqDone = 0;
+$('#hq-total').textContent = QUIZ.length;
+QUIZ.forEach(item => {
+  const d = document.createElement('div');
+  d.className = 'q';
+  d.innerHTML = `<b>🧒 ${esc(item.q)}</b><div class="ans">🤖 ${esc(item.a)}</div><div class="row"><button type="button" class="btn-teal">✅ Real fact</button><button type="button" class="btn-pink">🦄 Made up</button></div>`;
+  const [bReal, bFake] = $$('button', d);
+  const answer = guessReal => {
+    bReal.disabled = bFake.disabled = true;
+    const right = guessReal === item.real;
+    if (right) hqScore++;
+    hqDone++;
+    const r = document.createElement('div');
+    r.className = 'res ' + (right ? 'ok' : 'bad');
+    r.textContent = (right ? '🎉 Correct! ' : '😮 Not quite! ') + item.why;
+    d.appendChild(r);
+    $('#hq-score').textContent = hqScore;
+    if (right) burst(d, item.real ? ['✅', '⭐', '🎉'] : ['🦄', '🕵️', '🎉']);
+    if (hqDone === QUIZ.length) {
+      $('#quiz-end').innerHTML = `🏆 You scored <b>${hqScore} / ${QUIZ.length}</b>! Notice something? Chatty sounded <b>just as sure</b> when it was wrong. That's why hallucinations are sneaky! 🦄`;
+      say('I sounded confident every time… even when I was totally wrong! 😳');
+    }
+  };
+  bReal.onclick = () => answer(true);
+  bFake.onclick = () => answer(false);
+  $('#quiz').appendChild(d);
+});
+{
+  const why = [['Captain Zara Moonboots', 14], ['Neil Armstrong (he walked on the MOON 🌙)', 12], ['Nobody has, yet', 10], ['An astronaut named Bob', 9], ['A very brave hamster 🐹', 5]];
+  const other = 100 - why.reduce((a, w) => a + w[1], 0);
+  why.push(['…lots of other words', other]);
+  renderBars($('#why-bars'), why.map(w => w[0]), why.map(w => w[1] / 100), { highlight: 0 });
+}
+
+/* ---------------- 7. TRAINING ---------------- */
+const GYM = {
+  opts: ['meow 😺', 'moo 🐮', 'woof 🐶', 'quack 🦆'],
+  ex: [['🐱 The cat says', 0], ['🐮 The cow says', 1], ['🐶 The dog says', 2], ['🦆 The duck says', 3]],
+  lr: 0.9, z: null, step: 0, hist: [], busy: false,
+};
+function gymLoss() { return GYM.ex.reduce((s, [, y], i) => s - Math.log(softmax(GYM.z[i])[y]), 0) / GYM.ex.length; }
+function gymReset() {
+  // start with badly-set knobs: each animal favours the wrong sound
+  GYM.z = GYM.ex.map(([, y]) => GYM.opts.map((_, j) => j === y ? -0.6 : j === (y + 3) % 4 ? 0.7 : 0));
+  GYM.step = 0; GYM.hist = [gymLoss()];
+  gymRender(-1);
+}
+function gymStep() {
+  const i = GYM.step % GYM.ex.length, y = GYM.ex[i][1];
+  const p = softmax(GYM.z[i]);
+  GYM.z[i] = GYM.z[i].map((v, j) => v - GYM.lr * (p[j] - (j === y ? 1 : 0)));
+  GYM.step++; GYM.hist.push(gymLoss());
+  gymRender(i);
+}
+function gymRender(now) {
+  const box = $('#gym'); box.innerHTML = '';
+  GYM.ex.forEach(([prompt, y], i) => {
+    const p = softmax(GYM.z[i]), top = p.indexOf(Math.max(...p));
+    const d = document.createElement('div');
+    d.className = 'ex' + (i === now ? ' now' : '');
+    d.innerHTML = `<b>${prompt} ___</b>` + GYM.opts.map((o, j) =>
+      `<div class="minibar${j === y ? ' right' : ''}"><span>${o}</span><span class="bar-track"><span class="bar-fill" style="width:${(p[j] * 100).toFixed(1)}%"></span></span><span>${Math.round(p[j] * 100)}%</span></div>`).join('') +
+      `<div class="top">Chatty says: “${GYM.opts[top]}” ${top === y ? '✅' : '❌😂'}</div>`;
+    box.appendChild(d);
+  });
+  $('#gym-steps').textContent = GYM.step;
+  const L = GYM.hist[GYM.hist.length - 1];
+  $('#gym-loss').textContent = L.toFixed(2) + (L < 0.2 ? ' 🏆 Expert!' : L < 0.6 ? ' 🙂 Getting good!' : ' 😵 Lots of oopses');
+  // loss chart
+  const H = GYM.hist, maxY = Math.max(...H, 0.5), n = H.length;
+  const xs = i => 30 + (n > 1 ? i / (n - 1) : 0) * 280, ys = v => 110 - (v / maxY) * 95;
+  const pts = H.map((v, i) => `${xs(i).toFixed(1)},${ys(v).toFixed(1)}`).join(' ');
+  $('#loss-svg').innerHTML =
+    `<line x1="30" y1="110" x2="310" y2="110" stroke="#c4b5fd" stroke-width="2"/><line x1="30" y1="10" x2="30" y2="110" stroke="#c4b5fd" stroke-width="2"/>` +
+    `<text x="26" y="18" font-size="11" text-anchor="end" fill="#56567a">${maxY.toFixed(1)}</text><text x="26" y="113" font-size="11" text-anchor="end" fill="#56567a">0</text>` +
+    `<text x="310" y="125" font-size="11" text-anchor="end" fill="#56567a">training steps: ${GYM.step} ➡️</text>` +
+    `<polyline points="${pts}" fill="none" stroke="#ea580c" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>` +
+    `<circle cx="${xs(n - 1)}" cy="${ys(H[n - 1])}" r="5" fill="#db2777"/>`;
+}
+$('#gym-1').onclick = () => { if (!GYM.busy) gymStep(); };
+$('#gym-10').onclick = async () => {
+  if (GYM.busy) return;
+  GYM.busy = true; $('#gym-1').disabled = $('#gym-10').disabled = true;
+  for (let k = 0; k < 10; k++) { gymStep(); await sleep(220); }
+  GYM.busy = false; $('#gym-1').disabled = $('#gym-10').disabled = false;
+  if (GYM.hist[GYM.hist.length - 1] < 0.2) say('I did it! The cow says MOO! 🐮🎉 Practice makes perfect!');
+};
+$('#gym-reset').onclick = () => { if (!GYM.busy) gymReset(); };
+gymReset();
+
+const FT = {
+  before: '<b>🧒 How do I brush my teeth?</b><br>🤖 How do I brush my hair? How do I brush my dog? How do I brush my cat? How do I brush my… 🔁😵‍💫<br><small class="muted">(It just keeps continuing the text, like autocomplete!)</small>',
+  after: '<b>🧒 How do I brush my teeth?</b><br>🤖 Great question! 🪥 Put a pea-sized blob of toothpaste on your brush. Brush gently in small circles for 2 minutes. Don\'t forget your back teeth. Then spit and rinse! ✨😁',
+};
+$('#ft-before').onclick = () => { $('#ft-demo').innerHTML = FT.before; };
+$('#ft-after').onclick = () => { $('#ft-demo').innerHTML = FT.after; };
+$('#ft-demo').innerHTML = FT.before;
+
+const RL = [
+  { q: 'Can you help me with my maths homework? What is 3 + 4?', good: '3 + 4 = 7! 🎉 Want to try 5 + 2 next?', bad: 'Maths is boring. Go watch cartoons instead. 🙄📺' },
+  { q: 'Tell me a joke!', good: 'Why did the cookie go to the doctor? Because it felt crummy! 🍪🤒', bad: 'No.' },
+  { q: 'I\'m sad. My ice cream fell on the floor. 🍦', good: 'Oh no, that\'s a sad moment! 😢 Maybe we can think of something fun to cheer you up?', bad: 'LOL 😂 butterfingers!' },
+];
+let rlRound = 0, rlGood = 0;
+function rlRender() {
+  const box = $('#rl-box');
+  $('#rl-meter').style.width = (rlGood / RL.length * 100) + '%';
+  if (rlRound >= RL.length) {
+    box.innerHTML = `<p class="big">🎓 Training done! You picked the helpful answer <b>${rlGood} of ${RL.length}</b> times. ${rlGood === RL.length ? 'Chatty is now super kind and helpful! 😇' : 'Hmm, Chatty might have learned some cheeky habits… 😈 Try again?'}</p><button type="button" class="btn-ghost" id="rl-again">🔁 Teach again</button>`;
+    $('#rl-again').onclick = () => { rlRound = 0; rlGood = 0; rlRender(); };
+    return;
+  }
+  const r = RL[rlRound];
+  const order = Math.random() < 0.5 ? [['good', r.good], ['bad', r.bad]] : [['bad', r.bad], ['good', r.good]];
+  box.innerHTML = `<p><b>Round ${rlRound + 1} of ${RL.length}</b> · 🧒 “${esc(r.q)}”</p><div class="rl-opts"></div><p id="rl-msg"></p>`;
+  order.forEach(([kind, text], k) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'rl-opt';
+    b.textContent = `${k ? '🅱️' : '🅰️'} 🤖 ${text}`;
+    b.onclick = () => {
+      $$('.rl-opt', box).forEach(x => x.disabled = true);
+      if (kind === 'good') { rlGood++; $('#rl-msg').textContent = '👍 Great teaching! Chatty gets a gold star ⭐ and learns to answer like that.'; burst(b, ['⭐', '👍', '😇']); }
+      else { $('#rl-msg').textContent = '😬 Uh-oh! Chatty just learned to be rude. A good teacher picks the kind, helpful answer!'; burst(b, ['😈', '🙃', '💥']); }
+      $('#rl-meter').style.width = (rlGood / RL.length * 100) + '%';
+      rlRound++;
+      setTimeout(rlRender, 1800);
+    };
+    $('.rl-opts', box).appendChild(b);
+  });
+}
+rlRender();
+
+$('#badge').onclick = e => {
+  burst(e.currentTarget, ['🏅', '🤖', '🧠', '⭐', '🎉', '🦄']);
+  say('Congratulations, AI Explorer! 🏅 Now you know how I think. Stay curious and always check facts! 🕵️');
+};
+
+/* ---------------- start ---------------- */
+const m = location.hash.match(/^#stop(\d)$/);
+go(m ? +m[1] : 0);
+</script>
+</body>
+</html>
