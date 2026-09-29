@@ -263,6 +263,25 @@ select{font:inherit;padding:8px 12px;border-radius:999px;border:3px solid var(--
 .rl-opt.chosen{outline:4px solid var(--orange)}
 .lesson-list{list-style:none;padding:0;margin:8px 0;display:grid;gap:4px;font-size:16px}
 
+/* is chatty alive */
+.askrow{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.askrow button.on{outline:4px solid var(--orange)}
+.wordchips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.wc{display:inline-flex;flex-direction:column;align-items:center;background:#fff;color:var(--ink);border-radius:14px;padding:6px 12px;box-shadow:0 3px 0 var(--line);font-weight:600;animation:drop .4s both}
+.wc small{font-size:13px;font-weight:700;color:var(--purple)}
+.wc.sel{outline:3px solid var(--orange);background:var(--orange-soft)}
+.dicemath{background:#1e1b4b;color:#fef9c3;border-radius:14px;padding:10px 14px;font-size:16px;margin:10px 0}
+.dicemath b{color:#a7f3d0}
+.tries{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.tries div{background:#fff;border-radius:12px;padding:6px 12px;font-size:16px;box-shadow:0 2px 0 var(--line);animation:drop .3s both}
+.bigmsg{font-size:22px;text-align:center;background:linear-gradient(135deg,#fef9c3,#fce7f3);border-radius:22px;padding:18px;box-shadow:var(--shadow);margin:0 0 18px}
+.bigmsg .dice{font-size:54px;display:inline-block;animation:wiggle 1.5s infinite}
+table.cmp{width:100%;border-collapse:separate;border-spacing:0 6px;font-size:17px}
+table.cmp th{text-align:left;padding:6px 10px}
+table.cmp td{background:#fff;padding:8px 10px}
+table.cmp td:first-child{border-radius:12px 0 0 12px;font-weight:600}
+table.cmp td:last-child{border-radius:0 12px 12px 0}
+
 /* badge */
 .pledges{display:grid;gap:8px}
 .pledge{display:flex;gap:12px;align-items:flex-start;background:#fff;border-radius:16px;padding:10px 14px;box-shadow:0 3px 0 var(--line);cursor:pointer;transition:.2s}
@@ -282,7 +301,7 @@ select{font:inherit;padding:8px 12px;border-radius:999px;border:3px solid var(--
 .m-title{font-size:21px}
 .m-name{font-size:32px;font-weight:700;margin-top:16px;word-break:break-word}
 .m-date{color:var(--muted)}
-.m-stops{font-size:26px;letter-spacing:6px;margin-top:6px}
+.m-stops{font-size:24px;letter-spacing:4px;margin-top:6px}
 .medal-wrap.unlocked .medal{animation:spinin 1.1s ease-out}
 @keyframes spinin{from{transform:rotateY(540deg) scale(.4)}}
 .letter{background:#fffdf5;border:3px dashed var(--yellow);border-radius:18px;padding:16px 18px;font-size:19px;animation:pop .5s}
@@ -352,7 +371,7 @@ select{font:inherit;padding:8px 12px;border-radius:999px;border:3px solid var(--
     <div class="card yellow">
       <h3>🧭 What to expect</h3>
       <div class="expect">
-        <div><span class="e">🗺️</span><b>A warm-up and 7 stops.</b> Each stop explains one big idea about how AI thinks.</div>
+        <div><span class="e">🗺️</span><b>A warm-up and 8 stops.</b> Each stop explains one big idea about how AI thinks.</div>
         <div><span class="e">🎮</span><b>Play, don't just read!</b> You will click, guess, build stories and even train me.</div>
         <div><span class="e">😂</span><b>Lots of laughs.</b> Tap me any time for a robot joke.</div>
         <div><span class="e">⭐</span><b>Collect stars.</b> Every stop you visit gets a star in the menu at the top.</div>
@@ -385,7 +404,7 @@ select{font:inherit;padding:8px 12px;border-radius:999px;border:3px solid var(--
   </div>
 
   <div class="card">
-    <h3>🗺️ Our 7 stops</h3>
+    <h3>🗺️ Our 8 stops</h3>
     <div class="grid" id="map"></div>
   </div>
 </section>
@@ -728,6 +747,58 @@ select{font:inherit;padding:8px 12px;border-radius:999px;border:3px solid var(--
   </div>
 </section>
 
+<!-- ================= 8. IS CHATTY ALIVE? ================= -->
+<section class="page" data-nav="🎲 Is Chatty Alive?" data-stop="8" data-say="Do I really have feelings, {name}? Let's peek inside my brain and find out! 🎲">
+  <h2>🎲 Stop 8: Is Chatty alive?</h2>
+  <div class="card">
+    <p>Chatty says friendly things like <b>"I love chatting with you!"</b> or <b>"Pizza sounds yummy!"</b> 😊</p>
+    <p>So… does Chatty really love you? Has it ever tasted pizza? Let's look inside and see how those words are made.</p>
+  </div>
+
+  <div class="bigmsg"><span class="dice">🎲</span><br><b>Every answer from an AI is a statistical choice.</b><br>
+    <span style="font-size:18px">"Statistical" means it is chosen by <b>chance</b>, using patterns from lots of text. Chatty rolls weighted dice for every word, just like in Stop 3 and Stop 5.</span></div>
+
+  <div class="card purple">
+    <h3>🔍 Part A: Peek behind the feelings</h3>
+    <p><b>1️⃣ Ask Chatty something:</b></p>
+    <div class="askrow" id="alive-asks"></div>
+    <div id="alive-out" aria-live="polite"><p class="muted" style="margin-top:12px">👆 Pick a question to see Chatty's reply.</p></div>
+  </div>
+
+  <div class="card yellow">
+    <h3>✅❌ Part B: True or false?</h3>
+    <p>What do you think is true about Chatty?</p>
+    <p class="score">🧠 Score: <span id="tf-score">0</span> / <span id="tf-total">0</span></p>
+    <div class="quiz" id="tf-quiz"></div>
+    <p id="tf-end" class="big" style="margin-top:12px"></p>
+  </div>
+
+  <div class="card teal">
+    <h3>🤖 vs 🧑‍🤝‍🧑 Part C: A chatbot is a tool, not a friend</h3>
+    <p>Chatbots can be really useful! But they are different from the people in your life.</p>
+    <table class="cmp">
+      <thead><tr><th></th><th>🤖 AI chatbot</th><th>🧑‍🤝‍🧑 Friend or grown-up</th></tr></thead>
+      <tbody>
+        <tr><td>How it picks words</td><td>🎲 By chance, from patterns</td><td>💭 From real thoughts and feelings</td></tr>
+        <tr><td>Can give you a hug</td><td>❌ No</td><td>✅ Yes 🤗</td></tr>
+        <tr><td>Remembers your birthday next year</td><td>❌ Usually not</td><td>✅ Yes 🎂</td></tr>
+        <tr><td>Knows how you really feel</td><td>🤔 Only guesses from your words</td><td>✅ Can see you and care</td></tr>
+        <tr><td>Can help in an emergency</td><td>❌ No</td><td>✅ Yes 🚑</td></tr>
+        <tr><td>Patient when explaining things</td><td>✅ Yes, very!</td><td>✅ Usually 😅</td></tr>
+      </tbody>
+    </table>
+    <p class="big" style="margin-top:12px">💛 <b>Chatty's advice:</b> Use me to learn and explore. But for hugs, big feelings, secrets and problems, go to the people who love you.</p>
+  </div>
+
+  <details class="grown"><summary>👩‍🏫 For grown-ups</summary>
+    <ul>
+      <li>The replies here are sampled from hand-made probability tables. A real model does the same kind of thing with tokens: it scores every possible next token and picks one using those probabilities.</li>
+      <li>"The chance of this exact reply" is the product of the chances of each pick. This is how a language model gives a probability to a whole sentence.</li>
+      <li>Whether any future AI could have experiences is an open scientific and philosophical question. This stop teaches the well-supported point for children: chatbot replies are generated from patterns in text, so warm words are not evidence of feelings, and a chatbot should not replace real relationships.</li>
+    </ul>
+  </details>
+</section>
+
 <!-- ================= BADGE ================= -->
 <section class="page" data-nav="🏅 Badge" data-label="Badge" data-say="You made it, {name}! 🎉 Make your AI promises to unlock your badge! 🏅">
   <h2>🏅 Your AI Explorer Badge</h2>
@@ -741,6 +812,7 @@ select{font:inherit;padding:8px 12px;border-radius:999px;border:3px solid var(--
       <li>🌡️ <b>Temperature</b> controls boring 🧊 vs. bonkers 🔥 word picking.</li>
       <li>🦄 <b>Hallucinations</b> start with a wrong link and can snowball. Always check!</li>
       <li>🏋️ AI is <b>trained</b> by guessing and checking, then learning from people. Good teachers make good AI.</li>
+      <li>🎲 Every AI answer is a <b>statistical choice</b>: words picked by chance from patterns. Kind words are not real feelings, and sure-sounding words are not always true.</li>
     </ol>
   </div>
 
@@ -761,7 +833,7 @@ select{font:inherit;padding:8px 12px;border-radius:999px;border:3px solid var(--
       </div></div>
       <div class="m-name" id="m-name">AI Explorer</div>
       <div class="m-date" id="m-date"></div>
-      <div class="m-stops" aria-label="All 7 stops">🧠🧩✍️🎒🌡️🦄🏋️</div>
+      <div class="m-stops" aria-label="All 8 stops">🧠🧩✍️🎒🌡️🦄🏋️🎲</div>
       <p class="big" id="medal-lock" style="margin-top:10px">🔒 Make all 7 promises to unlock your badge!</p>
     </div>
     <div id="letter"></div>
@@ -1758,6 +1830,127 @@ function rlEnd() {
 }
 rlRender();
 
+/* ---------------- 8. IS CHATTY ALIVE? ---------------- */
+// each reply is 4 picks; every list of weights adds up to 100, so a weight is also a percentage
+const ALIVE = {
+  love: { q: 'Do you love me? 💖', slots: [
+    [['Aww,', 40], ['Of course!', 35], ['Yes!', 25]],
+    [['I love', 45], ['I really enjoy', 35], ['I like', 20]],
+    [['chatting with you!', 50], ['our talks!', 30], ['helping you!', 20]],
+    [['💖', 45], ['😊', 35], ['🤗', 20]]] },
+  sad: { q: 'I\'m sad today. 😢', slots: [
+    [['Oh no,', 45], ['I\'m sorry,', 35], ['Aww,', 20]],
+    [['that sounds hard.', 40], ['that\'s tough.', 35], ['I hear you.', 25]],
+    [['Maybe talk to a grown-up you trust?', 45], ['Do you want to talk about it?', 35], ['Want to hear a joke?', 20]],
+    [['💛', 50], ['🫂', 30], ['🌈', 20]]] },
+  friend: { q: 'Are you my best friend? 🤝', slots: [
+    [['I\'m so happy', 40], ['It\'s so nice', 35], ['I love it', 25]],
+    [['when we chat!', 45], ['to help you!', 35], ['to learn with you!', 20]],
+    [['Real friends are super important too!', 45], ['You\'re awesome!', 35], ['Let\'s have fun!', 20]],
+    [['😊', 45], ['🤝', 35], ['🌟', 20]]] },
+  hungry: { q: 'Are you hungry? 🍕', slots: [
+    [['Ha ha!', 40], ['Mmm,', 35], ['Ooh,', 25]],
+    [['pizza sounds', 50], ['cake sounds', 30], ['tacos sound', 20]],
+    [['so yummy', 50], ['delicious', 30], ['amazing', 20]],
+    [['right now! 😋', 45], ['today! 🍕', 35], ['for lunch! 🌮', 20]]] },
+};
+const alive = { key: null, picks: null, sel: 0, tries: [] };
+function aliveAsk(key, again) {
+  const A = ALIVE[key];
+  if (alive.key !== key) alive.tries = [];
+  alive.key = key;
+  alive.picks = A.slots.map(opts => pickWeighted(opts.map(o => o[1])));
+  alive.sel = 0;
+  alive.tries.unshift(A.slots.map((o, k) => o[alive.picks[k]][0]).join(' '));
+  $$('#alive-asks button').forEach(b => b.classList.toggle('on', b.dataset.k === key));
+  aliveRender();
+  if (again && alive.tries.length === 3) say('See? Same question, different dice rolls, different answers! If I really felt something, would it keep changing? 🎲🤔');
+}
+function aliveRender() {
+  const A = ALIVE[alive.key], out = $('#alive-out');
+  const pcts = A.slots.map((opts, k) => opts[alive.picks[k]][1]); // whole-number percentages
+  // exact: multiply the whole numbers, then divide by 100 once per extra pick (e.g. 40×45×50×35 ÷ 100³ = 3.15%)
+  const totalPct = pcts.reduce((a, b) => a * b, 1) / Math.pow(100, pcts.length - 1);
+  const possible = A.slots.reduce((a, o) => a * o.length, 1);
+  out.innerHTML = `
+    <div class="chatdemo"><b>🧒 ${esc(A.q)}</b><br><span class="big">🤖 ${esc(A.slots.map((o, k) => o[alive.picks[k]][0]).join(' '))}</span></div>
+    <p style="margin:12px 0 0"><b>2️⃣ Look inside:</b> Chatty built that reply from <b>${A.slots.length} dice rolls</b>. Each number is the chance of that piece. Click a piece to see what else Chatty could have picked.</p>
+    <div class="wordchips" id="alive-chips"></div>
+    <div class="bars" id="alive-bars"></div>
+    <div class="dicemath">🧮 Chance of this exact reply: ${pcts.map(v => v + '%').join(' × ')} = <b>${Number(totalPct.toFixed(4))}%</b><br>
+      🎲 Number of different replies Chatty could give: ${A.slots.map(o => o.length).join(' × ')} = <b>${possible}</b></div>
+    <p><b>3️⃣ Test it:</b> a real feeling would not change each time you ask. Does Chatty's reply change?</p>
+    <button type="button" class="btn-pink" id="alive-again">🎲 Ask the same question again</button>
+    <div class="tries" id="alive-tries"></div>
+    <div class="fact" style="margin-top:12px">🎲 <b>So is Chatty in love, sad or hungry?</b> No! Chatty picked words like "love" and "yummy" because they are <b>likely</b> words after questions like yours. People often write replies like that, so the dice lean that way. It is a statistical choice, not a feeling.</div>`;
+  A.slots.forEach((opts, k) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'wc' + (k === alive.sel ? ' sel' : '');
+    b.style.animationDelay = (k * 120) + 'ms';
+    b.innerHTML = `<span></span><small>🎲 ${opts[alive.picks[k]][1]}%</small>`;
+    $('span', b).textContent = opts[alive.picks[k]][0];
+    b.onclick = () => { alive.sel = k; $$('.wc', out).forEach((x, j) => x.classList.toggle('sel', j === k)); aliveBars(); };
+    $('#alive-chips').appendChild(b);
+  });
+  aliveBars();
+  alive.tries.forEach((t, n) => {
+    const d = document.createElement('div');
+    d.textContent = `Try ${alive.tries.length - n}: 🤖 ${t}`;
+    $('#alive-tries').appendChild(d);
+  });
+  $('#alive-again').onclick = () => aliveAsk(alive.key, true);
+}
+function aliveBars() {
+  const opts = ALIVE[alive.key].slots[alive.sel];
+  renderBars($('#alive-bars'), opts.map(o => o[0]), opts.map(o => o[1] / 100), { highlight: alive.picks[alive.sel] });
+}
+Object.entries(ALIVE).forEach(([k, A]) => {
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = 'btn-blue'; b.dataset.k = k;
+  b.textContent = A.q;
+  b.onclick = () => aliveAsk(k, false);
+  $('#alive-asks').appendChild(b);
+});
+
+const TF = [
+  { s: 'Chatty picks its words using chance (probability).', t: true, why: 'True! Every word is a weighted dice roll, based on patterns in text.' },
+  { s: 'When Chatty says "I love pizza", it has tasted pizza.', t: false, why: 'False! Chatty has never tasted anything. "Love pizza" is just a very common word pattern.' },
+  { s: 'If I ask the same question again, Chatty might answer differently.', t: true, why: 'True! New dice rolls can give new words. You saw it in Part A.' },
+  { s: 'Chatty can see me through the screen.', t: false, why: 'False! Chatty only gets the words you type, or the things you choose to send.' },
+  { s: 'Chatty sits and waits for me, missing me, when I close the app.', t: false, why: 'False! Nothing is running for you after you close the app. Chatty is not waiting or thinking about you.' },
+  { s: 'Chatty will remember me tomorrow in a brand-new chat.', t: false, why: 'False, usually! A new chat starts with an empty memory tube (Stop 4), unless the app has a special memory feature.' },
+  { s: 'Chatty knows what is true because it is a computer.', t: false, why: 'False! Chatty picks likely words, not checked facts. That is why hallucinations happen (Stop 6).' },
+  { s: 'Chatty can be a helpful tool, but for big feelings I should talk to people I trust.', t: true, why: 'True! Use AI for learning. Go to real people for hugs, help and big feelings. 💛' },
+];
+let tfScore = 0, tfDone = 0;
+$('#tf-total').textContent = TF.length;
+TF.forEach(item => {
+  const d = document.createElement('div');
+  d.className = 'q';
+  d.innerHTML = `<b></b><div class="row" style="margin-top:8px"><button type="button" class="btn-teal">✅ True</button><button type="button" class="btn-pink">❌ False</button></div>`;
+  $('b', d).textContent = item.s;
+  const [bT, bF] = $$('button', d);
+  const answer = guess => {
+    bT.disabled = bF.disabled = true;
+    const right = guess === item.t;
+    if (right) { tfScore++; burst(d, ['✅', '🎲', '⭐']); }
+    tfDone++;
+    const r = document.createElement('div');
+    r.className = 'res ' + (right ? 'ok' : 'bad');
+    r.textContent = (right ? '🎉 Correct! ' : '😮 Not quite! ') + item.why;
+    d.appendChild(r);
+    $('#tf-score').textContent = tfScore;
+    if (tfDone === TF.length) {
+      $('#tf-end').innerHTML = `🏆 You scored <b>${tfScore} / ${TF.length}</b>! Remember: Chatty's words are <b>statistical choices</b>, not feelings and not checked facts. 🎲`;
+      say('You figured me out! I\'m a very clever dice-roller for words, not a person. 🎲🤖');
+    }
+  };
+  bT.onclick = () => answer(true);
+  bF.onclick = () => answer(false);
+  $('#tf-quiz').appendChild(d);
+});
+
 /* ---------------- BADGE ---------------- */
 const PLEDGES = [
   ['🧑‍🤝‍🧑', 'I will use AI with a grown-up nearby.', 'Many AI apps are only for people aged 13 and older.'],
@@ -1794,7 +1987,7 @@ function badgeRefresh() {
     const L = document.createElement('div');
     L.className = 'letter';
     L.innerHTML = `<p>💌 <b>Dear <span id="letter-name"></span>,</b></p>
-      <p>Thank you for exploring my brain with me! Now you know my secrets: I am a super-fast <b>word guesser</b>. I am not magic, and I am not always right.</p>
+      <p>Thank you for exploring my brain with me! Now you know my secrets: I am a super-fast <b>word guesser</b>. Every word I say is a <b>statistical choice</b>, a dice roll based on patterns. I am not magic, I am not a person, and I am not always right.</p>
       <p>AI is a powerful tool, a bit like a bike 🚲. It can take you to amazing places, but you need to learn to ride it safely, wear your helmet, and always choose where YOU want to go.</p>
       <p>So remember: <b>you are the boss of the AI, not the other way round.</b> Ask lots of questions, check the answers, keep your secrets safe, and never stop using your own amazing brain. 🧠✨</p>
       <p>Your robot friend,<br><b>Chatty 🤖</b></p>`;
