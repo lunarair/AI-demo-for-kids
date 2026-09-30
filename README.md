@@ -1,6 +1,6 @@
 # 🤖 How Does AI Think?
 
-**A small, fun, interactive web page that explains how AI chatbots (Large Language Models, or LLMs) work, made for children around 9 years old.**
+**A small, fun, interactive web page that explains how AI chatbots (Large Language Models, or LLMs) work, made for children around 10 years old.**
 
 *Made by Claude to explain itself.* 🤖
 
